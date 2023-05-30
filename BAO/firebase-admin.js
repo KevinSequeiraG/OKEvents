@@ -1,5 +1,5 @@
 var admin = require("firebase-admin");
-
+//test
 if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert({
