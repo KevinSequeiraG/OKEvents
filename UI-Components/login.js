@@ -1,7 +1,7 @@
 import { useUserAuth } from "@/BAO/userAuthContext";
 
 const Login = () => {
-    const { logIn } = useUserAuth();
+    // const { logIn } = useUserAuth();
 
     return (
         <div className="h-screen lg:flex items-center justify-center bg-gray-100">
