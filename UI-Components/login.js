@@ -1,10 +1,13 @@
+import { useRouter } from "next/router";
 import { useUserAuth } from "../BAO/userAuthContext";
 
 const Login = () => {
     const { logIn } = useUserAuth();
+    const router = useRouter()
     
     const handleLogIn = () => {
         // Acá va la lógica para loggear al usuario
+        router.push("/home")
     }
 
     return (
@@ -25,6 +28,7 @@ const Login = () => {
                 </div>
 
                 <button
+                onClick={()=>handleLogIn()}
                     className="border-none bg-blue-800 py-2 px-3 text-white roudend-sm w-full mt-2 rounded-md hover:bg-blue-700 mb-5"
                     type="submit"
                 >
