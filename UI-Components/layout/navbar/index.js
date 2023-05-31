@@ -4,8 +4,8 @@ import { useState } from "react"
 import { HamburguerIcon, LogOutIcon, TicketsIcon, UserIcon } from "../../../public/svgs/Icons"
 import NavElement from "./NavElement";
 import { CalendarIcon, RolesIcon, UserNavIcon } from "../../../public/svgs/navbar/icons";
-import { useUserAuth } from "@/BAO/userAuthContext";
 // import ChangeRolModal from "../../Modals/ChangeRolModal";
+import { useUserAuth } from "@/BAO/userAuthContext";
 
 const Navbar = ({ children }) => {
     const router = useRouter();
@@ -16,7 +16,7 @@ const Navbar = ({ children }) => {
     const isVerifyEmail = router.pathname === "/verifyEmail";
     const isEditRegistration = router.pathname === "/editRegistration";
     const isActiveUsers = router.pathname.includes("/activeUsers");
-    const { loggedUser } = useUserAuth();
+    const { loggedUser, isAdmin } = useUserAuth();
     const [showIconLogo, setShowIconLogo] = useState(true);
     const [showChangeRolModal, setShowChangeRolModal] = useState(false)
 
@@ -31,7 +31,7 @@ const Navbar = ({ children }) => {
                     {/* Mobile */}
                     <div className="block md:hidden z-[51]">
                         <div id="navbar" className="bg-[#101217] w-full h-16 items-center flex z-50 justify-end px-6 font-Inter absolute">
-                            <Link href={"/eventsList"}><img alt="EventPlus Logo" src="../Images/logo1.png" className="w-[3rem] absolute left-4 top-[1rem]"></img></Link>
+                            <Link href={"/eventsList"}><img alt="EventPlus Logo" src="../Images/EventPlusShortLogo.png" className="w-[3rem] absolute left-4 top-[1rem]"></img></Link>
                             <Link href={"/eventsList"} onClick={() => { setShowNavbar(false) }}><TicketsIcon /></Link>
                             <button onClick={() => { setShowNavbar(!showNavbar) }}><HamburguerIcon /></button>
                         </div>
@@ -60,7 +60,7 @@ const Navbar = ({ children }) => {
                                 setShowIconLogo(true);
                             }}
                             className="lg:flex h-full flex-col lg:items-center justify-top relative round rounded-tr-lg rounded-br-lg lg:rounded-[0px_20px_20px_0px] z-50 space-y-5 navBarAnimation">
-                            <div className="h-14 w-5 fill-[#899592] flex items-center justify-center rounded-[19px] cursor-pointer lg:mr-auto px-1 w-auto min-w-[2.5rem] profileElement">
+                            <div className="h-14 w-5 fill-[#899592] flex items-center justify-center rounded-[19px] cursor-pointer lg:mr-auto px-1 w-auto min-w-[2.5rem] profileElement ml-3">
                                 {loggedUser.imageProfileUrl ? (
                                     <img
                                         src={`${loggedUser.imageProfileUrl}`}
@@ -70,7 +70,7 @@ const Navbar = ({ children }) => {
                                 ) : (
                                     <UserNavIcon />
                                 )}
-                                <div className="w-full">
+                                <div className="w-full test">
                                     <p className="font-Inter text-[12px] font-semibold tracking-normal leading-5 mb-1 truncate min-w-min">
                                         {loggedUser.name?.replace(/(^\w{1})|(\s+\w{1})/g, (letra) =>
                                             letra.toUpperCase()
@@ -89,14 +89,15 @@ const Navbar = ({ children }) => {
                                     </div>
                                 </div>
                             </div>
-                            <NavElement action={() => { setShowChangeRolModal(false) }} goTo="eventsList" active={router.pathname == "/eventsList"} icon={<CalendarIcon router={router} />} elementName="Eventos" />
+                            <NavElement action={() => { setShowChangeRolModal(false) }} goTo="home" active={router.pathname == "/home"} icon={<CalendarIcon router={router} />} elementName="Eventos" />
                             <NavElement action={() => { setShowChangeRolModal(false) }} goTo="myAccount" active={router.pathname == "/myAccount"} icon={<UserIcon color={"#899592"} />} elementName="Mi cuenta" />
                             <NavElement action={() => { setShowChangeRolModal(true) }} active={router.pathname == "/"} icon={<RolesIcon />} elementName="Roles" />
                             <NavElement action={() => { setShowChangeRolModal(false) }} goTo="/" active={router.pathname == "/"} icon={<LogOutIcon color={"#899592"} />} elementName="Cerrar sesión" />
-                            {/* {showIconLogo ? <img src="/Images/navbarLogo.png" className="absolute bottom-6 w-10" /> : <img src="/Images/appLogoWhite.png" className="absolute bottom-6 mx-2 w-5/6" />} */}
+                            <img src="/Images/logo1.png" className="absolute bottom-6" />
                         </nav>
                     </div>
                     <div className={`pt-16 md:pt-0 md:ml-16 w-full mx-auto scrollbar overflow-auto`}>
+                        
                         {children}
                     </div>
                 </div>

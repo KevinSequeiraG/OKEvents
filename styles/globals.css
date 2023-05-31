@@ -1,27 +1,277 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.scrollbar {
+  scrollbar-width: 14px !important;
+  scrollbar-color: #e9e9eb !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+/* For Chrome, EDGE, Opera, Others */
+.scrollbar::-webkit-scrollbar {
+  width: 14px !important;
+  height: 10px !important;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: #fff !important;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #e9e9eb !important;
+  border-radius: 50px !important;
+}
+
+.rti--container {
+  /* --rti-bg: #fff; */
+  --rti-border: #8b9592 !important;
+  --rti-main: black !important;
+  --rti-radius: 10px !important;
+  --rti-s: 0.5rem !important;
+  --rti-tag: #e9e9eb !important;
+  --rti-tag-remove: "#e53e3e";
+  color: #899592;
+  font-size: 14px;
+  text-align: center !important;
+  text-indent: 5px;
+  font-family: Inter !important;
+  min-height: 42px !important;
+  width: 100% !important;
+  display: flex !important;
+}
+.rti--input{  
+  display: flex !important;
+  flex: 1 1;
+}
+
+.rti--tag{
+  height: 20px !important;
+}
+
+.rti--container *:focus {
+  display: block !important;
+  color: black !important;
+}
+
+.scrollbarUsers {
+  scrollbar-width: 8px !important;
+  scrollbar-color: #e9e9eb !important;
+}
+
+/* For Chrome, EDGE, Opera, Others */
+.scrollbarUsers::-webkit-scrollbar {
+  width: 8px !important;
+  height: 10px !important;
+}
+
+.scrollbarUsers::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.scrollbarUsers::-webkit-scrollbar-thumb {
+  background: #e9e9eb !important;
+  border-radius: 50px !important;
+}
+
+.scrollbarDropDown {
+  scrollbar-width: 8px !important;
+  scrollbar-color: #e9e9eb !important;
+  border-radius: 5px !important;
+}
+
+/* For Chrome, EDGE, Opera, Others */
+.scrollbarDropDown::-webkit-scrollbar {
+  width: 8px !important;
+  height: 10px !important;
+  border-radius: 5px !important;
+}
+
+.scrollbarDropDown::-webkit-scrollbar-track {
+  background: #fff !important;
+  border-radius: 5px !important;
+}
+
+.scrollbarDropDown::-webkit-scrollbar-thumb {
+  background: #e9e9eb !important;
+  border-radius: 50px !important;
+}
+
+.BorderCorner {
+  border: 4px solid #35ca75;
+  display: inline-block;
+  margin: 25px auto;
+  padding: 25px;
+  position: relative;
+  width: auto;
+}
+
+.BorderCorner svg {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  z-index: 5;
+}
+
+.BorderCorner::before,
+.BorderCorner::after {
+  content: "";
+  position: absolute;
+  background: white;
+}
+
+.BorderCorner::before {
+  width: calc(100% + 50px + 6px - 120px);
+  height: calc(100% + 8px);
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.BorderCorner::after {
+  height: calc(100% + 50px + 6px - 120px);
+  width: calc(100% + 8px);
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+@media only screen and (max-width: 640px) {
+  .scrollbar {
+    scrollbar-width: 0px !important;
+    scrollbar-color: #e9e9eb !important;
+  }
+
+  /* For Chrome, EDGE, Opera, Others */
+  .scrollbar::-webkit-scrollbar {
+    width: 0px !important;
+    height: 0px !important;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    background: #fff !important;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #e9e9eb !important;
+    border-radius: 0px !important;
+  }
+
+  .rti--container {
+    --rti-bg: "#fff";
+    --rti-border: #8b9592 !important;
+    --rti-main: black !important;
+    --rti-radius: 10px !important;
+    --rti-s: 0.5rem !important;
+    --rti-tag: #e9e9eb !important;
+    --rti-tag-remove: "#e53e3e";
+    color: #899592;
+    text-align: center !important;
+    text-indent: 5px;
+    font-family: Inter !important;
+  }
+  .rti--container *:focus {
+    display: block !important;
+    color: black !important;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.games-bg-hover {
+  background-color: rgb(227, 227, 227) !important;
+}
+
+.scrollable {
+  overflow-y: auto;
+}
+
+.navBarAnimation{
+  min-width: 1rem;
+  width: 70px;
+  transition: all .4s ease-in-out;
+}
+
+.navBarAnimation .navElement{
+  width: 2rem;
+  height: 2rem;
+  position: relative;
+  margin-top: 1rem!important
+}
+.navElement svg{
+  position: absolute;
+  left: 7px;
+  margin-right: .8rem;
+}
+
+.navBarAnimation:hover .navElement{
+  width: auto;
+  min-width: 80%;
+  align-content: flex-start;
+}
+
+.navBarAnimation:hover .navElement svg{
+  position: relative;
+}
+
+.navBarAnimation .navElement p{
+  transition: all .3s linear;
+  opacity: 0;  
+}
+
+.navBarAnimation:hover .navElement p{
+  opacity: 100%;
+  opacity: 1;
+}
+
+.navBarAnimation:hover {
+  width: 170px;
+}
+
+.navbar:hover .test{
+  display: none;
+}
+
+.profileElement{
+  width: 10rem;
+  height: 3rem;
+  position: relative;
+  margin-top: 1rem!important;
+  text-align: center;
+}
+
+.profileElement img{
+  position: absolute;
+  left: -2px;
+  margin-right: .8rem;
+  margin-left: 1rem;
+}
+
+.profileElement svg{
+  margin-left: auto;
+  margin-right: auto;
+  width: 8rem;
+}
+
+.profileElement div{
+  transition: all .5s linear;
+  opacity: 0;  ;
+}
+
+.navBarAnimation:hover .profileElement{
+  margin-left: .7rem;
+}
+
+.navBarAnimation:hover .profileElement img{
+  position: relative;
+}
+
+.navBarAnimation:hover .profileElement div{
+  opacity: 1;
+}
+.registerCheckbox input[type=checkbox] {
+  accent-color: #426CB4;
 }
