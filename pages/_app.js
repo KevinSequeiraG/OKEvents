@@ -1,9 +1,12 @@
 import { UserAuthContextProvider } from '@/BAO/userAuthContext'
-import '@/styles/globals.css'
+import Navbar from '@/UI-Components/layout/navbar'
+import '../styles/globals.css'
 
 export default function App({ Component, pageProps }) {
   return (
     <UserAuthContextProvider>
-      <Component {...pageProps} />
+      <Navbar>
+        <Component {...pageProps} />
+      </Navbar>
     </UserAuthContextProvider>)
 }
