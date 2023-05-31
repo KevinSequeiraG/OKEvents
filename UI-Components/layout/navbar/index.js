@@ -31,7 +31,7 @@ const Navbar = ({ children }) => {
                     {/* Mobile */}
                     <div className="block md:hidden z-[51]">
                         <div id="navbar" className="bg-[#101217] w-full h-16 items-center flex z-50 justify-end px-6 font-Inter absolute">
-                            <Link href={"/eventsList"}><img alt="EventPlus Logo" src="../Images/EventPlusShortLogo.png" className="w-[3rem] absolute left-4 top-[1rem]"></img></Link>
+                            <Link href={"/eventsList"}><img alt="EventPlus Logo" src="../Images/logo1.png" className="w-[5rem] absolute left-0 top-[0rem]"></img></Link>
                             <Link href={"/eventsList"} onClick={() => { setShowNavbar(false) }}><TicketsIcon /></Link>
                             <button onClick={() => { setShowNavbar(!showNavbar) }}><HamburguerIcon /></button>
                         </div>
@@ -96,8 +96,7 @@ const Navbar = ({ children }) => {
                             <img src="/Images/logo1.png" className="absolute bottom-6" />
                         </nav>
                     </div>
-                    <div className={`pt-16 md:pt-0 md:ml-16 w-full mx-auto scrollbar overflow-auto`}>
-                        
+                    <div className={`pt-16 md:pt-0 md:ml-16 md:w-full mx-auto scrollbar overflow-auto`}>
                         {children}
                     </div>
                 </div>
