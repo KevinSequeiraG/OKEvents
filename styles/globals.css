@@ -275,3 +275,7 @@
 .registerCheckbox input[type=checkbox] {
   accent-color: #426CB4;
 }
+
+.form-check-input:checked[type=checkbox] {
+  background-image: url("https://firebasestorage.googleapis.com/v0/b/event-plus-5689d.appspot.com/o/docs%2Fdescarga.svg?alt=media&token=d4a49c62-1fb2-46a9-8c2d-d76b8579f8fd") !important;
+}

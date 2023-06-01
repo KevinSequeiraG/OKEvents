@@ -862,4 +862,22 @@ const HelpIcon = () => {
 }
 
 
-export { DefaultImageProfile_28, NoteIcon, EmailIcon, WhatsAppInColorIcon, CircleArrowIcon, RedLogOut, HelpIcon, ProfileRegisterIcon, CalendarIcon, GreenCheckIcon, AlertCircleIconBigger, SearchIdArrowIcon, AlertCircleIcon, CompleteCheckMarkIcon, AlertTriangleIcon, LocationIcon, AddCommentIcon, LogOutIcon, UserIcon, SignOut, WhatsAppIcon, QuestionIcon, UserImageIcon, EditIcon, FilterIcon, TicketsIcon, HamburguerIcon, QrIcon, SearchIcon, ScanQRIcon, ClockIcon, MapPointIcon, CommentsIcon, DropdownArrowIcon, IncompleteCheckMarkIcon, PadlockIcon, GoBackIcon, XCloseIcon }
+const PasswordEyeIcon = ({ showPassword }) => {
+  return (
+    <svg
+      id="Ico_view"
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="15"
+      viewBox="0 0 21.5 15.234"
+    >
+      <path
+        id="Icon_ionic-lg-eye"
+        d="M13,7.383A11.58,11.58,0,0,0,2.25,15,11.58,11.58,0,0,0,13,22.617,11.58,11.58,0,0,0,23.75,15,11.58,11.58,0,0,0,13,7.383Zm0,12.7A5,5,0,0,1,8.115,15,5,5,0,0,1,13,9.92,5,5,0,0,1,17.885,15,5,5,0,0,1,13,20.08Zm0-8.127a3.049,3.049,0,0,0,0,6.094,3.049,3.049,0,0,0,0-6.094Z"
+        transform="translate(-2.25 -7.383)"
+      />
+    </svg>
+  );
+};
+
+export { DefaultImageProfile_28, NoteIcon, EmailIcon, WhatsAppInColorIcon, CircleArrowIcon, RedLogOut, HelpIcon, ProfileRegisterIcon, CalendarIcon, GreenCheckIcon, AlertCircleIconBigger, SearchIdArrowIcon, AlertCircleIcon, CompleteCheckMarkIcon, AlertTriangleIcon, LocationIcon, AddCommentIcon, LogOutIcon, UserIcon, SignOut, WhatsAppIcon, QuestionIcon, UserImageIcon, EditIcon, FilterIcon, TicketsIcon, HamburguerIcon, QrIcon, SearchIcon, ScanQRIcon, ClockIcon, MapPointIcon, CommentsIcon, DropdownArrowIcon, IncompleteCheckMarkIcon, PadlockIcon, GoBackIcon, XCloseIcon, PasswordEyeIcon }
