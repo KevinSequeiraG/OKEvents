@@ -7,6 +7,10 @@ module.exports = {
     './UI-Components/**/*.{js,ts,jsx,tsx,mdx}'
   ],
   theme: {
+    fontFamily: {
+      Inter: ["Inter"],
+      Roboto: ["Roboto"]
+    },
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

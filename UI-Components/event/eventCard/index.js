@@ -46,7 +46,7 @@ const EventCard = () => {
                             }`}
                         alt="Foto del evento"
                     />
-                    <div className="px-2 py-3 flex flex-col justify-between">
+                    <div className="px-2 py-3 flex flex-col justify-between w-full">
                         <p className="text-[10px] font-bold text-[#899592]">
                             Concierto
                             {/* {data?.eventType} */}
