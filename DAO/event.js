@@ -58,4 +58,19 @@ const ValidateEventId = async (eventId) => {
   }
 };
 
-export { CreateEventNew, ValidateEventId };
+const getAllEvents = async () => {
+  try {
+    const eventsCollection = collection(database, "okevents/data/events");
+    const querySnapshot = await getDocs(eventsCollection);
+    const events = [];
+    querySnapshot.forEach((doc) => {
+      events.push({ id: doc.id, ...doc.data() });
+    });
+    return events;
+  } catch (error) {
+    console.error("Error al obtener los eventos:", error);
+    return [];
+  }
+};
+
+export { CreateEventNew, ValidateEventId, getAllEvents };

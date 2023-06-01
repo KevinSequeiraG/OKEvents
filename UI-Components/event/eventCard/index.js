@@ -1,17 +1,37 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
-const EventCard = () => {
+const EventCard = (props) => {
     const [eventState, setEventState] = useState(1)
     const [data, setData] = useState({})
+    const [startDate, setStartDate] = useState()
+    const [endDate, setEndDate] = useState()
+
+    function formatDate(timestamp) {
+        const date = new Date(timestamp.seconds * 1000);
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Los meses en JavaScript se indexan desde 0
+        const year = date.getFullYear();
+
+        // Agrega ceros iniciales si es necesario
+        const formattedDay = day < 10 ? `0${day}` : day;
+        const formattedMonth = month < 10 ? `0${month}` : month;
+
+        return `${formattedDay}/${formattedMonth}/${year}`;
+    }
+
+    useEffect(() => {
+        setStartDate(formatDate(props.eventData.startDate))
+        setEndDate(formatDate(props.eventData.endDate))
+    }, [])
+
 
     return (
         <>
             <Link
                 href={{
-                    pathname: "/guestUsers",
-                    query: data, // the data
+                    pathname: "/guestUsers"                    
                 }}
                 as="/guestUsers"
             >
@@ -48,20 +68,16 @@ const EventCard = () => {
                     />
                     <div className="px-2 py-3 flex flex-col justify-between w-full">
                         <p className="text-[10px] font-bold text-[#899592]">
-                            Concierto
-                            {/* {data?.eventType} */}
+                            {props.eventData?.eventType}
                         </p>
                         <h1 className="text-[13px] font-bold truncate mt-2 mb-1">
-                            Kevin's Active
-                            {/* {data?.name} */}
+                            {props.eventData?.name}
                         </h1>
                         <h3 className="text-[10px] text-[#899592]">
-                            Inicia: 15/11/2022
-                            {/* {`${new Date(parseInt(data?.startDate)).getDate()}/${new Date(parseInt(data?.startDate)).getMonth() + 1}/${new Date(parseInt(data?.startDate)).getFullYear()}`} */}
+                            Inicia: {startDate}
                         </h3>
                         <h3 className="text-[10px] text-[#899592]">
-                            Termina: 16/11/2022
-                            {/* {`${new Date(parseInt(data?.startDate)).getDate()}/${new Date(parseInt(data?.startDate)).getMonth() + 1}/${new Date(parseInt(data?.startDate)).getFullYear()}`} */}
+                            Termina: {endDate}
                         </h3>
                     </div>
                 </div>
