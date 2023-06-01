@@ -1,22 +1,48 @@
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 import { database } from "@/BAO/firebaseConfig";
+import Swal from "sweetalert2";
+
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener("mouseenter", Swal.stopTimer);
+    toast.addEventListener("mouseleave", Swal.resumeTimer);
+  },
+});
 
 const CreateEventNew = (event) => {
   const eventsRef = collection(database, "okevents/data/events");
+  const startDate = new Date(event.startDate);
+  const endDate = new Date(event.finishDate);
 
   addDoc(eventsRef, {
     name: event.name,
     eventId: event.eventId,
     description: event.description,
     eventType: event.eventType,
-    startDate: event.startDate,
-    endDate: event.finishDate,
+    startDate: startDate,
+    endDate: endDate,
     isOpen: true,
   })
     .then((docRef) => {
+      Toast.fire({
+        icon: "success",
+        title: `Evento creado correctamente`,
+      });
+      return true;
     })
     .catch((error) => {
       console.error("Error adding document: ", error);
+      Toast.fire({
+        icon: "success",
+        title: `No se pudo crear el evento`,
+      });
+      return false;
     });
 };
 
