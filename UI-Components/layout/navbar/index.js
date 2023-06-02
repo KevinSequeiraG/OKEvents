@@ -30,13 +30,6 @@ const Navbar = ({ children }) => {
   const [showIconLogo, setShowIconLogo] = useState(true);
   const [showChangeRolModal, setShowChangeRolModal] = useState(false);
 
-  //No lo deja ingresar a ninguna página a menos que haya hecho login
-  useEffect(() => {
-    if (!loggedUser && router.route != "/") {
-      window.location.href = "/";
-    }
-  }, [loggedUser]);
-
   return (
     <>
     {/* Si no tiene un usuario loggeado, aparece una animación */}
