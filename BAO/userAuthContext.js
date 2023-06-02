@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import { auth, database } from "./firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import { useRouter } from "next/router";
 
 const userAuthContext = createContext();
 
@@ -32,7 +33,7 @@ export function UserAuthContextProvider({ children }) {
     sessionStorage.removeItem("data");
     return signOut(auth);
   }
-
+  const router = useRouter();
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
@@ -47,6 +48,8 @@ export function UserAuthContextProvider({ children }) {
           setLoggedUser(JSON.parse(sessionStorage.getItem("data")));
           setLoggedUserUid(currentUser.uid);
         });
+      } else if (router.route != "/") {
+        window.location.href = "/";
       }
     });
     return () => {

@@ -880,4 +880,23 @@ const PasswordEyeIcon = ({ showPassword }) => {
   );
 };
 
-export { DefaultImageProfile_28, NoteIcon, EmailIcon, WhatsAppInColorIcon, CircleArrowIcon, RedLogOut, HelpIcon, ProfileRegisterIcon, CalendarIcon, GreenCheckIcon, AlertCircleIconBigger, SearchIdArrowIcon, AlertCircleIcon, CompleteCheckMarkIcon, AlertTriangleIcon, LocationIcon, AddCommentIcon, LogOutIcon, UserIcon, SignOut, WhatsAppIcon, QuestionIcon, UserImageIcon, EditIcon, FilterIcon, TicketsIcon, HamburguerIcon, QrIcon, SearchIcon, ScanQRIcon, ClockIcon, MapPointIcon, CommentsIcon, DropdownArrowIcon, IncompleteCheckMarkIcon, PadlockIcon, GoBackIcon, XCloseIcon, PasswordEyeIcon }
+const CreateUser = () => {
+    return (
+        <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="30"
+        viewBox="0 0 31.5 36"
+      >
+        <path
+          id="Icon_awesome-user"
+          data-name="Icon awesome-user"
+          d="M15.75,18a9,9,0,1,0-9-9A9,9,0,0,0,15.75,18Zm6.3,2.25H20.876a12.24,12.24,0,0,1-10.252,0H9.45A9.452,9.452,0,0,0,0,29.7v2.925A3.376,3.376,0,0,0,3.375,36h24.75A3.376,3.376,0,0,0,31.5,32.625V29.7A9.452,9.452,0,0,0,22.05,20.25Z"
+          fill="#35ca75"
+        />
+      </svg>
+
+    );
+  };
+
+export { DefaultImageProfile_28, NoteIcon, EmailIcon, WhatsAppInColorIcon, CircleArrowIcon, RedLogOut, HelpIcon, ProfileRegisterIcon, CalendarIcon, GreenCheckIcon, AlertCircleIconBigger, SearchIdArrowIcon, AlertCircleIcon, CompleteCheckMarkIcon, AlertTriangleIcon, LocationIcon, AddCommentIcon, LogOutIcon, UserIcon, SignOut, WhatsAppIcon, QuestionIcon, UserImageIcon, EditIcon, FilterIcon, TicketsIcon, HamburguerIcon, QrIcon, SearchIcon, ScanQRIcon, ClockIcon, MapPointIcon, CommentsIcon, DropdownArrowIcon, IncompleteCheckMarkIcon, PadlockIcon, GoBackIcon, XCloseIcon, PasswordEyeIcon, CreateUser }

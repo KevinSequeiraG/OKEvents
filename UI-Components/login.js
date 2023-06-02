@@ -127,10 +127,10 @@ const Login = () => {
       {forgotPasswordModal && (
         <ForgotPassword setForgotPasswordModal={setForgotPasswordModal} />
       )}
-      {/* falta arreglar el modal de registro de usuarios */}
-      {/* {registerUserModal && (
-        <RegisterUser setForgotPasswordModal={setForgotPasswordModal} />
-      )} */}
+
+     {registerUserModal && (
+        <RegisterUser setRegisterUserModal={setRegisterUserModal} />
+      )}
     </div>
   );
 };
