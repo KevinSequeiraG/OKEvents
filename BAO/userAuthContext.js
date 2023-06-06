@@ -46,7 +46,7 @@ export function UserAuthContextProvider({ children }) {
         codeData.then((doc) => {
           let data = doc.data();
           sessionStorage.setItem("data", JSON.stringify(data));
-          // setLoggedUser(JSON?.parse(sessionStorage.getItem("data")));
+          setLoggedUser(JSON?.parse(sessionStorage.getItem("data")));
           setLoggedUserUid(currentUser.uid);
         });
       } else if (router.route != "/") {
