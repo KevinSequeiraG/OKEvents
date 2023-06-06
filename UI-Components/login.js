@@ -6,7 +6,7 @@ import ForgotPassword from "./layout/modals/login/forgotPassword";
 import RegisterUser from "./layout/modals/login/registerUser";
 
 const Login = () => {
-  const { logIn, logOut, loginWithGoogle } = useUserAuth();
+  const { logIn, logOut } = useUserAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [userEmail, setUserEmail] = useState("");
@@ -36,17 +36,6 @@ const Login = () => {
       });
   };
 
-  // TEST
-  const LoginWithGoogle = async () => {
-    await loginWithGoogle().then((e) => {
-      console.log(e);
-      router.push("/home");
-    }).catch((error) => {
-      console.log("Error de login", error);
-      setLoginError(true);
-    });
-  }
-  // Finish test
 
   useEffect(() => {
     setRememberMeChecked(JSON.parse(localStorage.getItem("rememberMe")));
@@ -131,7 +120,7 @@ const Login = () => {
           >
             Olvidé mi contraseña
           </label>
-          <button className="bg-black text-white px-4 py-2" onClick={LoginWithGoogle}>google</button>
+          {/* <button className="bg-black text-white px-4 py-2" onClick={LoginWithGoogle}>google</button> */}
         </div>
       </div>
       {forgotPasswordModal && (
