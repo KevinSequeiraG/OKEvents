@@ -1,4 +1,4 @@
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { collection, addDoc, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { database } from "@/BAO/firebaseConfig";
 import Swal from "sweetalert2";
 
@@ -73,4 +73,53 @@ const getAllEvents = async () => {
   }
 };
 
-export { CreateEventNew, ValidateEventId, getAllEvents };
+const getEventById = async (eventId) => {
+  try {
+    var eventsData = []
+    const eventsCollection = collection(database, "okevents/data/events");
+    const q = query(
+      eventsCollection,
+      where("eventId", "==", eventId),
+    );
+    return await getDocs(q).then((response) => {
+      response.docs.map((data) => {
+        eventsData.push({ ...data.data(), id: data.id })
+      })
+      return eventsData;
+    })
+    // return !querySnapshot.empty;
+  } catch (error) {
+    console.error("Error al validar el eventId:", error);
+    return false;
+  }
+}
+
+const handleEventState = async (eventId, isOpen) => {
+  try {
+    const eventsCollection = collection(database, "okevents/data/events");
+    const q = query(eventsCollection, where("eventId", "==", eventId));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const docRef = querySnapshot.docs[0].ref;
+      await updateDoc(docRef, { isOpen: isOpen }).then(() => {
+        let title = "Se ha " + (isOpen ? "abierto" : "cerrado") + " el registro"
+        Toast.fire({
+          icon: "success",
+          title: title,
+        });
+        return true;
+      });
+      return true;
+    } else {
+      console.log("No se encontró ningún evento con los criterios de búsqueda.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error al actualizar el campo isOpen del evento:", error);
+    return false;
+  }
+};
+
+
+export { CreateEventNew, ValidateEventId, getAllEvents, getEventById, handleEventState };
