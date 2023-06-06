@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { PasswordEyeIcon } from "@/public/svgs/Icons";
 import ForgotPassword from "./layout/modals/login/forgotPassword";
 import RegisterUser from "./layout/modals/login/registerUser";
+import { doc, setDoc } from "firebase/firestore";
+import { database } from "@/BAO/firebaseConfig";
 
 const Login = () => {
   const { logIn, logOut, loginWithGoogle } = useUserAuth();
@@ -38,8 +40,22 @@ const Login = () => {
 
   // TEST
   const LoginWithGoogle = async () => {
-    await loginWithGoogle().then((e) => {
+    await loginWithGoogle().then(async(e) => {
+      const uid = e.user.uid
+      const user = e.user
       console.log(e);
+      const databaseRef = doc(
+        database,
+        `okevents/data/users/${uid}`
+      );
+      await setDoc(databaseRef, {
+        name: user.displayName,
+        identification: "",
+        email: user.email,
+        phoneNumber: "88888888",
+      }, { merge: true }).then(() => {
+        console.log("LISTO");
+      })
       router.push("/home");
     }).catch((error) => {
       console.log("Error de login", error);
@@ -70,7 +86,7 @@ const Login = () => {
             value={userEmail}
             onChange={(event) => setUserEmail(event.target.value)}
             className={`w-full text-gray-700 px-2 py-1 mt-1 bg-gray-100 rounded-md focus:outline-none border focus:border-blue-300 ${loginError && "border-[#e098a4]"
-            }`}
+              }`}
           />
         </div>
 
@@ -138,7 +154,7 @@ const Login = () => {
         <ForgotPassword setForgotPasswordModal={setForgotPasswordModal} />
       )}
 
-     {registerUserModal && (
+      {registerUserModal && (
         <RegisterUser setRegisterUserModal={setRegisterUserModal} />
       )}
     </div>

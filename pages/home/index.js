@@ -1,3 +1,4 @@
+import { useUserAuth } from "@/BAO/userAuthContext";
 import { getAllEvents } from "@/DAO/event";
 import EventCard from "@/UI-Components/event/eventCard";
 import Link from "next/link";
@@ -5,6 +6,7 @@ import { useEffect, useState } from "react";
 
 const Home = () => {
     const [eventsData, setEventsData] = useState([])
+    const {loggedUser} = useUserAuth()
 
     const getEventsData = async () => {
         try {
@@ -17,6 +19,7 @@ const Home = () => {
     }
 
     useEffect(() => {
+        console.log("object2222", loggedUser);
         getEventsData()
     }, [])
 
