@@ -29,8 +29,7 @@ const CalendarIcon = (props) => {
 
 const UserNavIcon = () => {
     return (
-        <svg
-            className="inline-block h-20 w-20 lg:h-min lg:w-20 rounded-full cursor-pointer hover:lg:shadow-lg lg:px-1"
+        <svg   
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 17 17"
         >
