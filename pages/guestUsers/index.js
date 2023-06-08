@@ -136,6 +136,7 @@ const GuestUsers = () => {
       <AddUsersModal
         showAddUsersModal={showAddUsersModal}
         setShowAddUsersModal={setShowAddUsersModal}
+        eventId={eventId}
       />
     </div>
   );
