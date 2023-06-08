@@ -6,7 +6,7 @@ const EventCard = (props) => {
     const [eventState, setEventState] = useState(1)
     const [data, setData] = useState({})
     const [startDate, setStartDate] = useState()
-    const [endDate, setEndDate] = useState()
+    // const [endDate, setEndDate] = useState()
 
     function formatDate(timestamp) {
         const date = new Date(timestamp.seconds * 1000);
@@ -23,7 +23,7 @@ const EventCard = (props) => {
 
     useEffect(() => {
         setStartDate(formatDate(props.eventData.startDate))
-        setEndDate(formatDate(props.eventData.endDate))
+        // setEndDate(formatDate(props.eventData.endDate))
     }, [])
 
 
@@ -31,7 +31,8 @@ const EventCard = (props) => {
         <>
             <Link
                 href={{
-                    pathname: "/guestUsers"                    
+                    pathname: "/guestUsers",
+                    query: {eventId: props.eventData?.eventId}
                 }}
                 as="/guestUsers"
             >
@@ -60,25 +61,25 @@ const EventCard = (props) => {
                     </div>
                     <img
                         className={`inline-block rounded-l-[10px] object-cover w-32 min-h-full min-w-[7.5rem] max-w-[7.5rem]`}
-                        src={`${data?.eventImageUrl
-                            ? data?.eventImageUrl
+                        src={`${props.eventData?.imageUrl
+                            ? props.eventData?.imageUrl
                             : "./Images/defaultEventPicture.png"
                             }`}
                         alt="Foto del evento"
                     />
                     <div className="px-2 py-3 flex flex-col justify-between w-full">
-                        <p className="text-[10px] font-bold text-[#899592]">
+                        <p className="text-[10px] lg:text-[12px] font-bold text-[#899592]">
                             {props.eventData?.eventType}
                         </p>
-                        <h1 className="text-[13px] font-bold truncate mt-2 mb-1">
+                        <h1 className="text-[12px] lg:text-[16px] font-bold truncate my-1">
                             {props.eventData?.name}
                         </h1>
-                        <h3 className="text-[10px] text-[#899592]">
+                        <h3 className="text-[10px] lg:text-[12px] text-[#899592]">
                             Inicia: {startDate}
                         </h3>
-                        <h3 className="text-[10px] text-[#899592]">
+                        {/* <h3 className="text-[10px] text-[#899592]">
                             Termina: {endDate}
-                        </h3>
+                        </h3> */}
                     </div>
                 </div>
             </Link>

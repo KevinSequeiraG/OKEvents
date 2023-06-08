@@ -1,7 +1,14 @@
-import { collection, addDoc, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { database } from "@/BAO/firebaseConfig";
 import Swal from "sweetalert2";
-
 
 const Toast = Swal.mixin({
   toast: true,
@@ -18,16 +25,20 @@ const Toast = Swal.mixin({
 const CreateEventNew = (event) => {
   const eventsRef = collection(database, "okevents/data/events");
   const startDate = new Date(event.startDate);
-  const endDate = new Date(event.finishDate);
-
+  // const endDate = new Date(event.finishDate);
+  const emptyArray = [];
   addDoc(eventsRef, {
     name: event.name,
     eventId: event.eventId,
     description: event.description,
     eventType: event.eventType,
     startDate: startDate,
-    endDate: endDate,
+    regisMails: emptyArray,
+    adminMails: emptyArray,
+    // endDate: endDate,
     isOpen: true,
+    closedBy: emptyArray,
+    imageUrl: event.imageUrl ? event.imageUrl : "",
   })
     .then((docRef) => {
       Toast.fire({
@@ -75,26 +86,23 @@ const getAllEvents = async () => {
 
 const getEventById = async (eventId) => {
   try {
-    var eventsData = []
+    var eventsData = [];
     const eventsCollection = collection(database, "okevents/data/events");
-    const q = query(
-      eventsCollection,
-      where("eventId", "==", eventId),
-    );
+    const q = query(eventsCollection, where("eventId", "==", eventId));
     return await getDocs(q).then((response) => {
       response.docs.map((data) => {
-        eventsData.push({ ...data.data(), id: data.id })
-      })
+        eventsData.push({ ...data.data(), id: data.id });
+      });
       return eventsData;
-    })
+    });
     // return !querySnapshot.empty;
   } catch (error) {
     console.error("Error al validar el eventId:", error);
     return false;
   }
-}
+};
 
-const handleEventState = async (eventId, isOpen) => {
+const handleEventState = async (eventId, loggeduid) => {
   try {
     const eventsCollection = collection(database, "okevents/data/events");
     const q = query(eventsCollection, where("eventId", "==", eventId));
@@ -102,24 +110,41 @@ const handleEventState = async (eventId, isOpen) => {
 
     if (!querySnapshot.empty) {
       const docRef = querySnapshot.docs[0].ref;
-      await updateDoc(docRef, { isOpen: isOpen }).then(() => {
-        let title = "Se ha " + (isOpen ? "abierto" : "cerrado") + " el registro"
+      const eventData = querySnapshot.docs[0].data();
+      const closedBy = eventData.closedBy || []; // Obtener el array existente o un array vacío si no existe
+
+      let updatedClosedBy;
+      if (!closedBy.includes(loggeduid)) {
+        // Agregar el loggeduid al array si no existe
+        updatedClosedBy = [...closedBy, loggeduid];
+      } else {
+        // Eliminar el loggeduid del array si ya existe
+        updatedClosedBy = closedBy.filter((uid) => uid !== loggeduid);
+      }
+
+      await updateDoc(docRef, { closedBy: updatedClosedBy }).then(() => {
+        let title = "Se ha actualizado el campo closedBy";
         Toast.fire({
           icon: "success",
           title: title,
         });
         return true;
       });
-      return true;
     } else {
       console.log("No se encontró ningún evento con los criterios de búsqueda.");
       return false;
     }
   } catch (error) {
-    console.error("Error al actualizar el campo isOpen del evento:", error);
+    console.error("Error al actualizar la mesa:", error);
     return false;
   }
 };
 
 
-export { CreateEventNew, ValidateEventId, getAllEvents, getEventById, handleEventState };
+export {
+  CreateEventNew,
+  ValidateEventId,
+  getAllEvents,
+  getEventById,
+  handleEventState,
+};

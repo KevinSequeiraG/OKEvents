@@ -24,6 +24,7 @@ const Toast = Swal.mixin({
 const RegisterNewUserFromLoginPage = async (user, authUid) => {
   const usersRef = doc(database, "okevents/data/users", authUid);
   await setDoc(usersRef, {
+    imageUrl: user.imageUrl,
     name: user.name,
     identification: user.identification,
     email: user.email.trim().toLowerCase(),

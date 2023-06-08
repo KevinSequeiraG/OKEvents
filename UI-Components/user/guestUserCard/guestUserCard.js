@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
+import ViewMember from "@/UI-Components/modal/viewMember";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
 const GuestUserCard = (props) => {
   const [statusProfile, setStatusProfile] = useState(props.stat);
   const [userName, setuserName] = useState()
+  const [showViewMember, setShowViewMember] = useState(false)
 
   useEffect(() => {
     setuserName(props?.userName?.charAt(0).toUpperCase() + props?.userName?.slice(1));
@@ -39,51 +41,43 @@ const GuestUserCard = (props) => {
         <div className="ml-3">
           <div className="font-bold  flex items-center">
             <p className="text-[13px] truncate mr-1">
-              {props.userName != undefined && props.lastName != undefined
-                ? userName + " " + props.lastName.replace(/(^\w{1})|(\s+\w{1})/g, (letra) =>
-                letra.toUpperCase()) : ""}{" "}
+              {props.userName}
             </p>
           </div>
           {props.userDNI ? (
-            <p className="text-[10px] text-[#899592]">ID {props.userDNI}</p>
+            <p className="text-[10px] text-[#899592]">Ced: {props.userDNI}</p>
           ) : (
             null
           )}
         </div>
       </div>
-      <p>{props.activeUser}</p>
 
-      {props.activeUser?<Link
-        href={{
-          pathname: `${props.activeUser ? "/profileView" : ""}`,
-          query: props.userData,
-        }}
-        as={"/profileView"}
-      >
+      {props.activeUser ?
         <button
           onClick={() => {
-            props.activeUser ? null : props.updateState(props.id);
+            setShowViewMember(true)
           }}
           className={`${props.activeUser
-              ? "bg-gray-200 text-black"
-              : "bg-green-500 text-white"
+            ? "bg-gray-200 text-black"
+            : "bg-green-500 text-white"
             } px-4 h-[36px] rounded-[10px] font-bold text-[13px]`}
         >
           Ver perfil
         </button>
-      </Link>:null}
-      
-      {!props.activeUser?<button
+        : null}
+
+      {!props.activeUser ? <button
         onClick={() => {
           props.activeUser ? null : props.updateState(props.id);
         }}
         className={`${props.activeUser
-            ? "bg-gray-200 text-black"
-            : "bg-green-500 text-white"
+          ? "bg-gray-200 text-black"
+          : "bg-green-500 text-white"
           } px-4 h-[36px] rounded-[10px] font-bold text-[13px]`}
       >
         Check in
-      </button>:null}
+      </button> : null}
+      <ViewMember showViewMember={showViewMember} setShowViewMember={setShowViewMember} memberData={props.user} />
     </div>
   );
 };

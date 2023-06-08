@@ -32,7 +32,12 @@ const Navbar = ({ children }) => {
 
   return (
     <>
-    {/* Si no tiene un usuario loggeado, aparece una animación */}
+      {/* Si no tiene un usuario loggeado, aparece una animación */}
+      <title>{`OKEvents`}</title>
+      <meta property="og:title" content={`Event+`} key="title" />
+      {/* <link rel="shortcut icon" href={"/navbarLogoIco.ico"} /> */}
+      <meta httpEquiv="cache-control" content="no-cache" />
+      <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
       {!loggedUser && router.route != "/" && <LoadingAnimation />}
       {/* {showChangeRolModal && <ChangeRolModal showChangeRolModal={showChangeRolModal} setShowChangeRolModal={setShowChangeRolModal} />} */}
       {isLoginPage ||
@@ -113,28 +118,26 @@ const Navbar = ({ children }) => {
               }}
               className="lg:flex h-full flex-col lg:items-center justify-top relative round rounded-tr-lg rounded-br-lg lg:rounded-[0px_20px_20px_0px] z-50 space-y-5 navBarAnimation"
             >
-              <div className="h-14 w-5 fill-[#899592] flex items-center justify-center rounded-[19px] cursor-pointer lg:mr-auto px-1 w-auto min-w-[2.5rem] profileElement ml-3">
-                {loggedUser?.imageProfileUrl ? (
+              <div className="h-14 w-5 fill-[#899592] flex items-center justify-center rounded-[19px] cursor-pointer lg:mr-auto px-1 w-auto min-w-[2.5rem] profileElement ml-1">
+                {loggedUser?.imageUrl ? (
                   <img
-                    src={`${loggedUser.imageProfileUrl}`}
+                    src={`${loggedUser.imageUrl}`}
                     alt="Foto de perfil"
                     className="z-50 sm:ml-0 inline-block min-h-16 w-16 lg:w-10 lg:h-10 lg:min-w-10 lg:min-h-10 lg:max-h-10 lg:max-w-10 rounded-full cursor-pointer hover:lg:shadow-lg object-cover"
                   />
                 ) : (
-                  <UserNavIcon />
+                  <img
+                    src={`https://firebasestorage.googleapis.com/v0/b/okevents-f3a50.appspot.com/o/docs%2FuserDefaultProfileImageBlue.png?alt=media&token=495139da-1ca2-44b2-b4ad-c3fa1b9bf1b6`}
+                    alt="Foto de perfil"
+                    className="z-50 sm:ml-0 inline-block min-h-16 w-16 lg:w-10 lg:h-10 lg:min-w-10 lg:min-h-10 lg:max-h-10 lg:max-w-10 rounded-full cursor-pointer hover:lg:shadow-lg object-cover"
+                  />
                 )}
-                <div className="w-full test">
+                <div className="w-full test text-left truncate">
                   <p className="font-Inter text-[12px] font-semibold tracking-normal leading-5 mb-1 truncate min-w-min">
                     {loggedUser?.name?.replace(
                       /(^\w{1})|(\s+\w{1})/g,
                       (letra) => letra.toUpperCase()
-                    ) +
-                      " " +
-                      loggedUser?.lastName
-                        ?.split(" ")[0]
-                        .replace(/(^\w{1})|(\s+\w{1})/g, (letra) =>
-                          letra.toUpperCase()
-                        )}
+                    )}
                   </p>
                   <div
                     className={`font-Inter text-[12px] bg-gray-200 text-black rounded-[5px] text-center text-white font-semibold  flex items-center justify-center w-min`}
