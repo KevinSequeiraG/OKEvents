@@ -102,7 +102,7 @@ const getEventById = async (eventId) => {
   }
 };
 
-const handleEventState = async (eventId, isOpen) => {
+const handleEventState = async (eventId, loggeduid) => {
   try {
     const eventsCollection = collection(database, "okevents/data/events");
     const q = query(eventsCollection, where("eventId", "==", eventId));
@@ -110,27 +110,36 @@ const handleEventState = async (eventId, isOpen) => {
 
     if (!querySnapshot.empty) {
       const docRef = querySnapshot.docs[0].ref;
-      await updateDoc(docRef, { isOpen: isOpen }).then(() => {
-        let title =
-          "Se ha " + (isOpen ? "abierto" : "cerrado") + " el registro";
+      const eventData = querySnapshot.docs[0].data();
+      const closedBy = eventData.closedBy || []; // Obtener el array existente o un array vacío si no existe
+
+      let updatedClosedBy;
+      if (!closedBy.includes(loggeduid)) {
+        // Agregar el loggeduid al array si no existe
+        updatedClosedBy = [...closedBy, loggeduid];
+      } else {
+        // Eliminar el loggeduid del array si ya existe
+        updatedClosedBy = closedBy.filter((uid) => uid !== loggeduid);
+      }
+
+      await updateDoc(docRef, { closedBy: updatedClosedBy }).then(() => {
+        let title = "Se ha actualizado el campo closedBy";
         Toast.fire({
           icon: "success",
           title: title,
         });
         return true;
       });
-      return true;
     } else {
-      console.log(
-        "No se encontró ningún evento con los criterios de búsqueda."
-      );
+      console.log("No se encontró ningún evento con los criterios de búsqueda.");
       return false;
     }
   } catch (error) {
-    console.error("Error al actualizar el campo isOpen del evento:", error);
+    console.error("Error al actualizar la mesa:", error);
     return false;
   }
 };
+
 
 export {
   CreateEventNew,

@@ -1,11 +1,15 @@
 import { getEventById, handleEventState } from "@/DAO/event";
 import AddUsersModal from "@/UI-Components/modal/addUsersModal";
+import GuestUserCard from "@/UI-Components/user/guestUserCard/guestUserCard";
 import { EditIcon } from "@/public/svgs/Icons";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import LoadingAnimation from "@/UI-Components/layout/loadingAnimation";
+import { useUserAuth } from "../../BAO/userAuthContext";
+import { getMembersByEventId } from "@/DAO/members";
 
 const GuestUsers = () => {
+  const [usersData, setUsersData] = useState([])
   const router = useRouter();
   const [data, setData] = useState({});
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -14,6 +18,7 @@ const GuestUsers = () => {
   // const [endDate, setEndDate] = useState()
   const [isOpen, setIsOpen] = useState(false);
   const [showAddUsersModal, setShowAddUsersModal] = useState(false);
+  const { loggedUserUid } = useUserAuth();
 
   function formatDate(timestamp) {
     const date = new Date(timestamp.seconds * 1000);
@@ -56,17 +61,32 @@ const GuestUsers = () => {
       });
   }, []);
 
+  useEffect(() => {
+    if (eventId != undefined) {
+      getMembersByEventId(eventId).then((members) => {
+        console.log("Miembros encontrados:");
+        setUsersData(members)
+        members.forEach((member) => {
+          console.log(member);
+        });
+      })
+        .catch((error) => {
+          console.error("Ocurrió un error al obtener los miembros:", error);
+        });
+    }
+  }, [eventId])
+
+
   return (
     <div>
       {data != undefined && !isLoadingData ? (
         <div>
           <img
             className="object-cover md:h-64 w-full"
-            src={`${
-              data?.imageUrl
-                ? data?.imageUrl
-                : "../Images/defaultEventPicture.png"
-            }`}
+            src={`${data?.imageUrl
+              ? data?.imageUrl
+              : "../Images/defaultEventPicture.png"
+              }`}
             alt="Foto de perfil"
           />
           <div className="w-full p-6 bg-gray-100 relative">
@@ -109,7 +129,7 @@ const GuestUsers = () => {
               </button>
               <button
                 onClick={() => {
-                  handleEventState("436285", !isOpen);
+                  handleEventState("948475", loggedUserUid);
                   setIsOpen(!isOpen);
                 }}
                 className=" bg-gray-600 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-gray-700 w-full sm:w-fit"
@@ -124,21 +144,30 @@ const GuestUsers = () => {
               <EditIcon />
             </button>
           </div>
-        </div>
+        </div >
       ) : (
         <LoadingAnimation />
       )}
       <div>
-        <p className="text-center font-bold text-[1.6rem] mt-20">
-          Miembros de evento
-        </p>
+        <p className="text-center font-bold text-[1.6rem] mt-20 mb-10">Miembros de evento</p>
+        {usersData.map((user, i) => {
+          return (
+            <GuestUserCard
+              imageProfileUrl={user.imageProfileUrl}
+              key={i}
+              userName={user.name}
+              userDNI={user.identification}
+              activeUser={user.status}
+              user={user}
+            />)
+        })}
       </div>
       <AddUsersModal
         showAddUsersModal={showAddUsersModal}
         setShowAddUsersModal={setShowAddUsersModal}
         eventId={eventId}
       />
-    </div>
+    </div >
   );
 };
 
