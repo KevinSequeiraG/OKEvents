@@ -1,5 +1,6 @@
 import { getEventById, handleEventState } from "@/DAO/event";
 import AddUsersModal from "@/UI-Components/modal/addUsersModal";
+import GuestUserCard from "@/UI-Components/user/guestUserCard/guestUserCard";
 import { EditIcon } from "@/public/svgs/Icons";
 import { useEffect, useState } from "react";
 
@@ -10,6 +11,7 @@ const GuestUsers = () => {
     const [endDate, setEndDate] = useState()
     const [isOpen, setIsOpen] = useState(false)
     const [showAddUsersModal, setShowAddUsersModal] = useState(false)
+    const [usersData, setUsersData] = useState([{ id: '00001', name: 'Kevin Sequeira', ced: '123131312', status1: true, status2: 'Confirmado', email: 'kevin@gmail.com', tel: '83838383' }, { id: '00001', name: 'Kevin Sequeira', ced: '123131312', status1: true, status2: 'Confirmado', email: 'kevin@gmail.com', tel: '83838383' }, { id: '00001', name: 'Kevin Sequeira', ced: '123131312', status1: true, status2: 'Confirmado', email: 'kevin@gmail.com', tel: '83838383' }, { id: '00001', name: 'Kevin Sequeira', ced: '123131312', status1: true, status2: 'Confirmado', email: 'kevin@gmail.com', tel: '83838383' }, { id: '00001', name: 'Kevin Sequeira', ced: '123131312', status1: true, status2: 'Confirmado', email: 'kevin@gmail.com', tel: '83838383' }, { id: '00001', name: 'Kevin Sequeira', ced: '123131312', status1: true, status2: 'Confirmado', email: 'kevin@gmail.com', tel: '83838383' }])
 
     function formatDate(timestamp) {
         const date = new Date(timestamp.seconds * 1000);
@@ -90,6 +92,15 @@ const GuestUsers = () => {
         ) : null}
         <div>
             <p className="text-center font-bold text-[1.6rem] mt-20">Miembros de evento</p>
+            {usersData.map(user => {
+                return (
+                    <GuestUserCard
+                        imageProfileUrl={user.imageProfileUrl}
+                        key={user.id}
+                        userName={user.name}
+                        userDNI={user.ced}
+                    />)
+            })}
         </div>
         <AddUsersModal showAddUsersModal={showAddUsersModal} setShowAddUsersModal={setShowAddUsersModal} />
     </div>)
