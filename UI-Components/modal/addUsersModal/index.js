@@ -1,10 +1,12 @@
 
 import RegisterUserInEvent from "@/UI-Components/layout/modals/registerUserInEvent";
 import { XCloseIcon } from "@/public/svgs/Icons";
+import BulkModal from "@/UI-Components/modal/bulkLoad";
 import { useState } from "react";
 
 const AddUsersModal = (props) => {
     const [showAddUsersModal, setShowAddUsersModal] = useState(false);
+    const [showAddBulkModal, setShowBulkModal] = useState(false);
     return (
         <>        
         <div className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[51] ${props.showAddUsersModal ? '' : 'hidden'}`}>
@@ -17,6 +19,7 @@ const AddUsersModal = (props) => {
                 </div>
             </div>
         </div>
+        <BulkModal showAddBulkModal={showAddBulkModal} setShowBulkModal={setShowBulkModal}></BulkModal>
         {showAddUsersModal && (
         <RegisterUserInEvent setRegisterUserModal={setShowAddUsersModal} isNotFromAutoRegis/>
       )}
