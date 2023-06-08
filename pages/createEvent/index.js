@@ -85,7 +85,9 @@ const CreateEvent = () => {
             Nombre de evento
           </label>
           <input
-            className="w-full border font-normal border-[#AAB4C1] rounded-[10px] h-[47px] px-3 text-[16px] text-[#AAB4C1] focus:text-black"
+            className={`w-full border rounded-[10px] h-[47px] px-3 text-[16px] text-[#AAB4C1] focus:text-black ${
+              errors.name ? "border-red-500" : "border-[#AAB4C1]"
+            }`}
             name="name"
             value={event.name}
             onChange={(e) => setEvent({ ...event, name: e.target.value })}
@@ -128,7 +130,9 @@ const CreateEvent = () => {
             Descripción
           </label>
           <textarea
-            className="h-20 w-full border border-[#8B9592] rounded-[10px] px-4 text-[16px] text-[#899592] focus:text-black py-2"
+            className={`h-20 w-full border rounded-[10px] px-4 text-[16px] text-[#899592] focus:text-black py-2 ${
+              errors.description ? "border-red-500" : "border-[#AAB4C1]"
+            }`}
             name="description"
             value={event.description}
             onChange={(e) =>
@@ -148,7 +152,9 @@ const CreateEvent = () => {
           <select
             name="eventType"
             id="eventType"
-            className="w-full border font-normal border-[#AAB4C1] rounded-[10px] h-[47px] px-3 text-[16px] text-[#AAB4C1] focus:text-black   "
+            className={`w-full border rounded-[10px] h-[47px] px-3 text-[16px] text-[#AAB4C1] focus:text-black ${
+              errors.eventType ? "border-red-500" : "border-[#AAB4C1]"
+            }`}
             value={event.eventType}
             onChange={(e) => setEvent({ ...event, eventType: e.target.value })}
           >
@@ -177,7 +183,9 @@ const CreateEvent = () => {
             onChange={(e) => setEvent({ ...event, startDate: e.target.value })}
             type="date"
             id="startDate"
-            className="w-full border font-normal border-[#AAB4C1] rounded-[10px] h-[47px] px-3 text-[16px] text-[#AAB4C1] focus:text-black   "
+            className={`w-full border rounded-[10px] h-[47px] px-3 text-[16px] text-[#AAB4C1] focus:text-black ${
+              errors.startDate ? "border-red-500" : "border-[#AAB4C1]"
+            }`}
             // value={startDate}
             // onChange={(e) => setStartDate(e.target.value)}
           />
