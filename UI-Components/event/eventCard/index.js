@@ -28,9 +28,9 @@ const EventCard = (props) => {
       //today's date
       var today = new Date();
 
-      var fecha1 = new Date(props.eventData.startDate * 10000);
+      var fecha1 = new Date(props.eventData.startDate * 1000);
       fecha1.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00
-console.log(fecha1)
+
       var fecha2 = new Date(today);
       fecha2.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00
 
