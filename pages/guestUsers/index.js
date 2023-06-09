@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import LoadingAnimation from "@/UI-Components/layout/loadingAnimation";
 import { useUserAuth } from "../../BAO/userAuthContext";
 import { getMembersByEventId } from "@/DAO/members";
+import SearchInput from "@/UI-Components/layout/searchInput";
 
 const GuestUsers = () => {
   const [usersData, setUsersData] = useState([])
@@ -15,7 +16,7 @@ const GuestUsers = () => {
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [eventId, setEventId] = useState();
   const [startDate, setStartDate] = useState();
-  // const [endDate, setEndDate] = useState()
+  const [adminInputFilter, setAdminInputFilter] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [showAddUsersModal, setShowAddUsersModal] = useState(false);
   const { loggedUserUid } = useUserAuth();
@@ -65,17 +66,34 @@ const GuestUsers = () => {
   useEffect(() => {
     if (eventId != undefined) {
       getMembersByEventId(eventId).then((members) => {
-        console.log("Miembros encontrados:");
         setUsersData(members)
-        members.forEach((member) => {
-          console.log(member);
-        });
       })
         .catch((error) => {
           console.error("Ocurrió un error al obtener los miembros:", error);
         });
     }
   }, [eventId, updateMemberList])
+
+  useEffect(() => {
+    const filteredData = usersData.filter(
+      (user) =>
+        user.identification.includes(adminInputFilter) ||
+        user.memberID.includes(adminInputFilter)
+    );
+
+    if (adminInputFilter == '') {
+      console.log("adsfa");
+      getMembersByEventId(eventId).then((members) => {
+        setUsersData(members)
+      }
+      ).catch((error) => {
+        console.error("Ocurrió un error al obtener los miembros:", error);
+      }
+      );
+    }
+
+    setUsersData(filteredData);
+  }, [adminInputFilter])
 
 
   return (
@@ -150,7 +168,15 @@ const GuestUsers = () => {
         <LoadingAnimation />
       )}
       <div>
-        <p className="text-center font-bold text-[1.6rem] mt-20 mb-10">Miembros de evento</p>
+        <div className="w-1/2 mx-auto mt-10">
+          <SearchInput
+            searchPlaceholder="Buscar miembro por cédula o número de miembro"
+            usersPage
+            adminInputFilter={adminInputFilter}
+            setAdminInputFilter={setAdminInputFilter}
+          />
+        </div>
+        <p className="text-center font-bold text-[1.6rem] mt-10 mb-10">Miembros de evento</p>
         {usersData.map((user, i) => {
           return (
             <GuestUserCard
@@ -158,8 +184,9 @@ const GuestUsers = () => {
               key={i}
               userName={user.name}
               userDNI={user.identification}
-              activeUser={user.status}
+              activeUser={user.present}
               user={user}
+              loggedUserUid={loggedUserUid}
             />)
         })}
       </div>

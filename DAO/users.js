@@ -5,6 +5,7 @@ import {
   getDocs,
   doc,
   setDoc,
+  getDoc,
 } from "firebase/firestore";
 import { database } from "@/BAO/firebaseConfig";
 import Swal from "sweetalert2";
@@ -96,4 +97,23 @@ const ValidateUserExists = async (identification, email) => {
   }
 };
 
-export { RegisterNewUserFromLoginPage, ValidateUserExists, RegisterNewUserFromEvent };
+const getUserByUid = async (uid) => {
+  try {
+    const userRef = doc(database, "okevents/data/users", uid);
+    const userDoc = await getDoc(userRef)
+
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      return { uid: userDoc.id, ...userData };
+    } else {
+      console.log(`No se encontró el usuario con UID ${uid}.`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error al obtener el usuario con UID ${uid}:`, error);
+    return null;
+  }
+};
+
+
+export { getUserByUid, RegisterNewUserFromLoginPage, ValidateUserExists, RegisterNewUserFromEvent };
