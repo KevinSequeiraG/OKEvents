@@ -75,7 +75,7 @@ export default function ForgotPassword(props) {
           onClick={() => {
             sendChangePasswordEmail();
           }}
-          className="bg-green-500 mt-1 text-white rounded-lg py-1 w-full font-medium text-[16px]"
+          className="bg-[#426CB4] mt-1 text-white rounded-lg py-1 w-full font-medium text-[16px]"
         >
           Enviar
         </button>

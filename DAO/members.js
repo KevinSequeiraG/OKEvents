@@ -1,5 +1,5 @@
 import { database } from "@/BAO/firebaseConfig";
-import { collection, getDocs, query, where, addDoc, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, where, addDoc, orderBy, doc, updateDoc, getDoc } from "firebase/firestore";
 export { getMembersByEventId };
 
 import Swal from "sweetalert2";
@@ -7,16 +7,25 @@ import Swal from "sweetalert2";
 const getMembersByEventId = async (eventId) => {
   try {
     const membersCollection = collection(database, "okevents/data/members");
-    const q = query(membersCollection, where("eventId", "==", eventId), orderBy("createdAt", "desc"));
+    const q = query(
+      membersCollection,
+      where("eventId", "==", eventId),
+      orderBy("createdAt", "desc")
+    );
     const querySnapshot = await getDocs(q);
 
-    const members = querySnapshot.docs.map((doc) => doc.data());
+    const members = querySnapshot.docs.map((doc) => {
+      const memberData = doc.data();
+      return { ...memberData, id: doc.id }; // Agregar el ID como propiedad "id"
+    });
+
     return members;
   } catch (error) {
     console.error("Error al obtener los miembros por eventId:", error);
     return [];
   }
 };
+
 
 const Toast = Swal.mixin({
   toast: true,
@@ -46,35 +55,28 @@ const bulkMemberUpload = (members, eventId) => {
       eventId: eventId,
       imageUrl: "",
       confirmation: "",
-      memberID: `${
-        data.hasOwnProperty("Id") ? data.Id.toString().trim().toLowerCase() : ""
-      }`,
-      name: `${
-        data.hasOwnProperty("Nombre") ? data.Nombre.trim().toLowerCase() : ""
-      }`,
-      lastName: `${
-        data.hasOwnProperty("Apellidos")
-          ? data.Apellidos.trim().toLowerCase()
-          : ""
-      }`,
-      identification: `${
-        data.hasOwnProperty("Cédula")
-          ? data.Cédula.toString().trim().toLowerCase()
-          : ""
-      }`,
-      email: `${
-        data.hasOwnProperty("Correo_Electrónico")
-          ? data.Correo_Electrónico.trim().toLowerCase()
-          : ""
-      }`,
-      phoneNumber: `${
-        data.hasOwnProperty("Teléfono")
-          ? data.Teléfono.toString().trim().toLowerCase()
-          : ""
-      }`,
-      status: `${
-        data.hasOwnProperty("Estatus") ? data.Estatus.trim() : ""
-      }`,
+      memberID: `${data.hasOwnProperty("Id") ? data.Id.toString().trim().toLowerCase() : ""
+        }`,
+      name: `${data.hasOwnProperty("Nombre") ? data.Nombre.trim().toLowerCase() : ""
+        }`,
+      lastName: `${data.hasOwnProperty("Apellidos")
+        ? data.Apellidos.trim().toLowerCase()
+        : ""
+        }`,
+      identification: `${data.hasOwnProperty("Cédula")
+        ? data.Cédula.toString().trim().toLowerCase()
+        : ""
+        }`,
+      email: `${data.hasOwnProperty("Correo_Electrónico")
+        ? data.Correo_Electrónico.trim().toLowerCase()
+        : ""
+        }`,
+      phoneNumber: `${data.hasOwnProperty("Teléfono")
+        ? data.Teléfono.toString().trim().toLowerCase()
+        : ""
+        }`,
+      status: `${data.hasOwnProperty("Estatus") ? data.Estatus.trim() : ""
+        }`,
       createdAt: date,
       present: false,
       arrivalDate: "",
@@ -129,17 +131,48 @@ const memberNoExists = async (eventId, memberID, identification) => {
   const qMemberIdentification = query(memberRef, where("eventId", "==", eventId), where("identification", "==", identification));
 
   const querySnapshotId = await getDocs(qMemberID);
-    const querySnapshotIdentif = await getDocs(qMemberIdentification);
-console.log(memberID, identification)
-console.log("whyyy", !querySnapshotId.empty || !querySnapshotIdentif.empty)
-    if (!querySnapshotId.empty || !querySnapshotIdentif.empty) {
-      Toast.fire({
-        icon: "error",
-        title: `El miembro ingresado ya se encuentra ingresado en el evento`,
-      });
-    }
+  const querySnapshotIdentif = await getDocs(qMemberIdentification);
+  console.log(memberID, identification)
+  console.log("whyyy", !querySnapshotId.empty || !querySnapshotIdentif.empty)
+  if (!querySnapshotId.empty || !querySnapshotIdentif.empty) {
+    Toast.fire({
+      icon: "error",
+      title: `El miembro ingresado ya se encuentra ingresado en el evento`,
+    });
+  }
 
-    return querySnapshotId.empty && querySnapshotIdentif.empty;
+  return querySnapshotId.empty && querySnapshotIdentif.empty;
 };
 
-export { downloadFileBulkUpload, bulkMemberUpload, memberNoExists, addMember };
+const getMemberById = async (memberId) => {
+  try {
+    const memberRef = doc(database, "okevents/data/members", memberId);
+    const memberDoc = await getDoc(memberRef);
+
+    if (memberDoc.exists()) {
+      const memberData = memberDoc.data();
+      return { id: memberDoc.id, ...memberData };
+    } else {
+      console.log(`No se encontró el miembro con ID ${memberId}.`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error al obtener el miembro con ID ${memberId}:`, error);
+    return null;
+  }
+};
+
+const UpdatePresentState = async (memberId, loggedUserUid) => {
+  try {
+    const memberRef = doc(database, "okevents/data/members", memberId);
+    const currentTime = new Date();
+
+    await updateDoc(memberRef, { present: true, arrivalDate: currentTime, registeredBy: loggedUserUid });
+
+    console.log(`Campo "present" actualizado correctamente para el miembro con ID ${memberId}.`);
+  } catch (error) {
+    console.error(`Error al actualizar el campo "present" del miembro con ID ${memberId}:`, error);
+  }
+};
+
+export { downloadFileBulkUpload, bulkMemberUpload, memberNoExists, addMember, UpdatePresentState, getMemberById };
