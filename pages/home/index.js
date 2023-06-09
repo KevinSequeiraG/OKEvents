@@ -1,4 +1,4 @@
-import { getAllEvents } from "@/DAO/event";
+import { getActiveEvents } from "@/DAO/event";
 import EventCard from "@/UI-Components/event/eventCard";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ const Home = () => {
 
     const getEventsData = async () => {
         try {
-            const events = await getAllEvents();
+            const events = await getActiveEvents();
             setEventsData(events)
             // Realiza acciones adicionales con los eventos obtenidos
         } catch (error) {

@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import LoadingAnimation from "@/UI-Components/layout/loadingAnimation";
 import { useUserAuth } from "../../BAO/userAuthContext";
 import { getMembersByEventId } from "@/DAO/members";
+import Link from "next/link";
+import DeleteEventModal from "@/UI-Components/modal/deleteEvent";
 
 const GuestUsers = () => {
   const [usersData, setUsersData] = useState([])
@@ -18,6 +20,7 @@ const GuestUsers = () => {
   // const [endDate, setEndDate] = useState()
   const [isOpen, setIsOpen] = useState(false);
   const [showAddUsersModal, setShowAddUsersModal] = useState(false);
+  const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const { loggedUserUid } = useUserAuth();
 
   function formatDate(timestamp) {
@@ -84,10 +87,11 @@ const GuestUsers = () => {
         <div>
           <img
             className="object-cover md:h-64 w-full"
-            src={`${data?.imageUrl
-              ? data?.imageUrl
-              : "../Images/defaultEventPicture.png"
-              }`}
+            src={`${
+              data?.imageUrl
+                ? data?.imageUrl
+                : "../Images/defaultEventPicture.png"
+            }`}
             alt="Foto de perfil"
           />
           <div className="w-full p-6 bg-gray-100 relative">
@@ -137,20 +141,30 @@ const GuestUsers = () => {
               >
                 {isOpen ? "Cerrar" : "Abrir"} mesa
               </button>
-              <button className=" bg-red-800 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-red-700 w-full sm:w-fit">
+              <button onClick={() => setShowDeleteEventModal(true)} className=" bg-red-800 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-red-700 w-full sm:w-fit">
                 Eliminar evento
               </button>
             </div>
-            <button className="absolute top-[0%] right-3 sm:right-10 ml-8 bg-gray-400 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-gray-500">
-              <EditIcon />
-            </button>
+            <Link
+              href={{
+                pathname: "/editEvent",
+                query: {eventId: eventId},
+              }}
+              as={"/editEvent"}
+            >
+              <button className="absolute top-[0%] right-3 sm:right-10 ml-8 bg-gray-400 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-gray-500">
+                <EditIcon />
+              </button>
+            </Link>
           </div>
-        </div >
+        </div>
       ) : (
         <LoadingAnimation />
       )}
       <div>
-        <p className="text-center font-bold text-[1.6rem] mt-20 mb-10">Miembros de evento</p>
+        <p className="text-center font-bold text-[1.6rem] mt-20 mb-10">
+          Miembros de evento
+        </p>
         {usersData.map((user, i) => {
           return (
             <GuestUserCard
@@ -160,7 +174,8 @@ const GuestUsers = () => {
               userDNI={user.identification}
               activeUser={user.status}
               user={user}
-            />)
+            />
+          );
         })}
       </div>
       <AddUsersModal
@@ -170,7 +185,12 @@ const GuestUsers = () => {
         setUpdateMemberList={setUpdateMemberList}
         updateMemberList={updateMemberList}
       />
-    </div >
+      <DeleteEventModal
+        showAddUsersModal={showDeleteEventModal}
+        setShowAddUsersModal={setShowDeleteEventModal}
+        eventId={data.id}
+      />
+    </div>
   );
 };
 

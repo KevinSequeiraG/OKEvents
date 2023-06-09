@@ -40,6 +40,7 @@ const CreateEventNew = (event) => {
     isOpen: true,
     closedBy: emptyArray,
     imageUrl: event.imageUrl ? event.imageUrl : "",
+    active: true,
   })
     .then((docRef) => {
       Toast.fire({
@@ -51,8 +52,57 @@ const CreateEventNew = (event) => {
     .catch((error) => {
       console.error("Error adding document: ", error);
       Toast.fire({
-        icon: "success",
+        icon: "error",
         title: `No se pudo crear el evento`,
+      });
+      return false;
+    });
+};
+
+const UpdateEvent = (event) => {
+  const eventToEdit = doc(database, "okevents/data/events", event.id);
+  const startDate = new Date(event.startDate);
+  updateDoc(eventToEdit, {
+    name: event.name,
+    description: event.description,
+    eventType: event.eventType,
+    startDate: startDate,
+    imageUrl: event.imageUrl ? event.imageUrl : "",
+  })
+    .then(() => {
+      Toast.fire({
+        icon: "success",
+        title: `Evento editado correctamente`,
+      });
+      return true;
+    })
+    .catch((error) => {
+      console.error("Error editing document: ", error);
+      Toast.fire({
+        icon: "error",
+        title: `No se pudo editar el evento`,
+      });
+      return false;
+    });
+};
+
+const DeleteEvent = (eventId) => {
+  const eventToDelete = doc(database, "okevents/data/events", eventId);
+  updateDoc(eventToDelete, {
+    active: false,
+  })
+    .then(() => {
+      Toast.fire({
+        icon: "success",
+        title: `Evento eliminado correctamente`,
+      });
+      return true;
+    })
+    .catch((error) => {
+      console.error("Error deleting document: ", error);
+      Toast.fire({
+        icon: "error",
+        title: `No se pudo eliminar el evento`,
       });
       return false;
     });
@@ -74,6 +124,22 @@ const getAllEvents = async () => {
   try {
     const eventsCollection = collection(database, "okevents/data/events");
     const querySnapshot = await getDocs(eventsCollection);
+    const events = [];
+    querySnapshot.forEach((doc) => {
+      events.push({ id: doc.id, ...doc.data() });
+    });
+    return events;
+  } catch (error) {
+    console.error("Error al obtener los eventos:", error);
+    return [];
+  }
+};
+
+const getActiveEvents = async () => {
+  try {
+    const eventsCollection = collection(database, "okevents/data/events");
+    const qActiveEvents = query(eventsCollection, where("active", "==", true));
+    const querySnapshot = await getDocs(qActiveEvents);
     const events = [];
     querySnapshot.forEach((doc) => {
       events.push({ id: doc.id, ...doc.data() });
@@ -148,26 +214,37 @@ const addUserMailToEvent = async (eventId, userType, userEmail) => {
   var eventToEdit = doc(database, `okevents/data/events`, eventData[0].id);
   var adminMailsArray = eventData[0].adminMails;
   var regisMailsArray = eventData[0].regisMails;
-  
+
   if (userType == "Administrador" && !adminMailsArray.includes(userEmail)) {
     adminMailsArray.push(userEmail);
-    await setDoc(eventToEdit, {
-      adminMails: adminMailsArray,
-    }, {merge:true});
+    await setDoc(
+      eventToEdit,
+      {
+        adminMails: adminMailsArray,
+      },
+      { merge: true }
+    );
     Toast.fire({
       icon: "success",
       title: `Usuario registrado correctamente`,
     });
-  } else if (userType == "Registrador" && !regisMailsArray.includes(userEmail)) {
+  } else if (
+    userType == "Registrador" &&
+    !regisMailsArray.includes(userEmail)
+  ) {
     regisMailsArray.push(userEmail);
-    await setDoc(eventToEdit, {
-      regisMails: regisMailsArray,
-    }, {merge:true});
+    await setDoc(
+      eventToEdit,
+      {
+        regisMails: regisMailsArray,
+      },
+      { merge: true }
+    );
     Toast.fire({
       icon: "success",
       title: `Usuario registrado correctamente`,
     });
-  } else{
+  } else {
     Toast.fire({
       icon: "error",
       title: `El usuario ya existe en el evento`,
@@ -182,4 +259,7 @@ export {
   getEventById,
   handleEventState,
   addUserMailToEvent,
+  UpdateEvent,
+  DeleteEvent,
+  getActiveEvents
 };
