@@ -33,7 +33,7 @@ const Toast = Swal.mixin({
 const downloadFileBulkUpload = () => {
   var link = document.createElement("a");
   link.href =
-    "https://firebasestorage.googleapis.com/v0/b/okevents-f3a50.appspot.com/o/bulkLoad%2FCarga%20Masiva%20OKEvents.xlsx?alt=media&token=8bb2f376-1249-4631-bcb5-ef52c6982e3d";
+    "https://firebasestorage.googleapis.com/v0/b/okevents-f3a50.appspot.com/o/bulkLoad%2FCarga%20Masiva%20OKEvents.xlsx?alt=media&token=309ed0f7-6987-41b0-8edb-3b42142c3273";
   link.download = "Carga Masiva.xlsx";
   link.dispatchEvent(new MouseEvent("click"));
 };
@@ -51,11 +51,6 @@ const bulkMemberUpload = (members, eventId) => {
       }`,
       name: `${
         data.hasOwnProperty("Nombre") ? data.Nombre.trim().toLowerCase() : ""
-      }`,
-      lastName: `${
-        data.hasOwnProperty("Apellidos")
-          ? data.Apellidos.trim().toLowerCase()
-          : ""
       }`,
       identification: `${
         data.hasOwnProperty("Cédula")
@@ -79,23 +74,21 @@ const bulkMemberUpload = (members, eventId) => {
       present: false,
       arrivalDate: "",
       registeredBy: "",
+    }).then((docRef) => {
+      Toast.fire({
+        icon: "success",
+        title: `Usuarios creados correctamente`,
+      });
+      return true;
+    })
+    .catch((error) => {
+      Toast.fire({
+        icon: "success",
+        title: `No se pudo crear los usuarios`,
+      });
+      return false;
     });
   });
-  //   .then((docRef) => {
-  //     Toast.fire({
-  //       icon: "success",
-  //       title: `Evento creado correctamente`,
-  //     });
-  //     return true;
-  //   })
-  //   .catch((error) => {
-  //     console.error("Error adding document: ", error);
-  //     Toast.fire({
-  //       icon: "success",
-  //       title: `No se pudo crear el evento`,
-  //     });
-  //     return false;
-  //   });
 };
 
 const addMember = async (user, eventId) => {
