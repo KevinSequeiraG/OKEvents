@@ -61,6 +61,7 @@ const GuestUsers = () => {
       });
   }, []);
 
+  const [updateMemberList, setUpdateMemberList] = useState(false);
   useEffect(() => {
     if (eventId != undefined) {
       getMembersByEventId(eventId).then((members) => {
@@ -74,7 +75,7 @@ const GuestUsers = () => {
           console.error("Ocurrió un error al obtener los miembros:", error);
         });
     }
-  }, [eventId])
+  }, [eventId, updateMemberList])
 
 
   return (
@@ -153,7 +154,7 @@ const GuestUsers = () => {
         {usersData.map((user, i) => {
           return (
             <GuestUserCard
-              imageProfileUrl={user.imageProfileUrl}
+              imageProfileUrl={user.imageUrl}
               key={i}
               userName={user.name}
               userDNI={user.identification}
@@ -166,6 +167,8 @@ const GuestUsers = () => {
         showAddUsersModal={showAddUsersModal}
         setShowAddUsersModal={setShowAddUsersModal}
         eventId={eventId}
+        setUpdateMemberList={setUpdateMemberList}
+        updateMemberList={updateMemberList}
       />
     </div >
   );

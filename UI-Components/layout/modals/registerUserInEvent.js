@@ -1,7 +1,10 @@
-import { RegisterNewUserFromLoginPage, ValidateUserExists } from "@/DAO/users";
+import { RegisterNewUserFromEvent, ValidateUserExists } from "@/DAO/users";
 import { CreateUser, PasswordEyeIcon } from "@/public/svgs/Icons";
 import React, { useEffect, useState } from "react";
 import ProfileImageUpload from "../profileImageUpload";
+import { addUserMailToEvent } from "@/DAO/event";
+import { addMember } from "@/DAO/members";
+import Swal from "sweetalert2";
 
 export default function RegisterUserInEvent(props) {
   const [user, setUser] = useState({
@@ -12,45 +15,91 @@ export default function RegisterUserInEvent(props) {
     password: "",
     confirmPassword: "",
     phoneNumber: "",
+    userType: "",
+    memberID: "",
+    status: "",
+    confirmation: "",
   });
 
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
   const handleRegistration = async () => {
-    // Acá va la lógica para registrar al usuario
     if (formValidation()) {
-      const isNewUser = await ValidateUserExists(
-        user.identification,
-        user.email
-      );
-      if (isNewUser) {
-        await fetch("/api/createUser", {
-          method: "POST",
-          headers: {
-            Accept: "application/json, text/plain, */*",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userEmail: user.email.trim().toLowerCase(),
-            userPassword: user.password,
-          }),
-        }).then(async (res) => {
-          if (res.status === 200) {
-            res = await res.json();
-            await RegisterNewUserFromLoginPage(user, res.uid).then(() => {
-              handleCancelButton();
-            });
-          } else {
-            console.log(res);
-            Toast.fire({
-              icon: "error",
-              title: `Error al registrar en Auth`,
-            });
-          }
-        });
+      if (user.userType.trim() === "Miembro") {
+        await createMemberUser();
+      } else {
+        await createAdminRegisUser();
       }
+      props.setUpdateMemberList(!props.updateMemberList);
+    }
+  };
+
+  //create members
+  const createMemberUser = async () => {
+    const result = await addMember(user, props.eventId);
+    if (result) {
+      Toast.fire({
+        icon: "success",
+        title: `Miembro ingresado satisfactoriamente`,
+      });
+      handleCancelButton();
+    }
+  };
+
+  //create Admins and Regis
+  const createAdminRegisUser = async () => {
+    const isNewUser = await ValidateUserExists(user.identification, user.email);
+    if (isNewUser) {
+      await fetch("/api/createUser", {
+        method: "POST",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userEmail: user.email.trim().toLowerCase(),
+          userPassword: user.password,
+        }),
+      }).then(async (res) => {
+        if (res.status === 200) {
+          res = await res.json();
+          await RegisterNewUserFromEvent(user, res.uid, props.eventId).then(
+            () => {
+              handleCancelButton();
+            }
+          );
+        } else {
+          console.log(res);
+          Toast.fire({
+            icon: "error",
+            title: `Error al registrar en Auth`,
+          });
+        }
+      });
+    } else {
+      await addUserMailToEvent(props.eventId, user.userType, user.email).then(
+        () => {
+          handleCancelButton();
+          // Toast.fire({
+          //   icon: "success",
+          //   title: `Usuario registrado correctamente`,
+          // });
+        }
+      );
     }
   };
 
@@ -68,22 +117,42 @@ export default function RegisterUserInEvent(props) {
     } else if (!isValidEmail(user.email)) {
       validationErrors.email = "El correo electrónico no es válido";
     }
-    if (user.password.trim() === "") {
-      validationErrors.password = "La contraseña es requerida";
-    } else if (user.password.length < 8) {
-      validationErrors.password =
-        "La contraseña debe tener mínimo 8 caracteres";
-    }
-    if (user.confirmPassword.trim() === "") {
-      validationErrors.confirmPassword = "Confirmar la contraseña es requerido";
-    } else if (user.confirmPassword != user.password) {
-      validationErrors.password = "La contraseñas no coinciden";
-      validationErrors.confirmPassword = "La contraseñas no coinciden";
-    }
     if (user.phoneNumber.trim() === "") {
       validationErrors.phoneNumber = "El teléfono es requerido";
     } else if (!isValidPhoneNumber(user.phoneNumber)) {
       validationErrors.phoneNumber = "El teléfono no es válido";
+    }
+    if (user.userType.trim() === "" || user.userType.trim() === "Seleccionar") {
+      validationErrors.userType = "El tipo de usuario es requerido";
+    }
+    if (user.userType.trim() === "Miembro") {
+      if (user.memberID.trim() === "") {
+        validationErrors.memberID =
+          "La identificación del miembro es requerida";
+      }
+      if (user.status.trim() === "" || user.status.trim() === "Seleccionar") {
+        validationErrors.status = "El estatus es requerido";
+      }
+      if (
+        user.confirmation.trim() === "" ||
+        user.confirmation.trim() === "Seleccionar"
+      ) {
+        validationErrors.confirmation = "La confirmación es requerida";
+      }
+    } else {
+      if (user.password.trim() === "") {
+        validationErrors.password = "La contraseña es requerida";
+      } else if (user.password.length < 8) {
+        validationErrors.password =
+          "La contraseña debe tener mínimo 8 caracteres";
+      }
+      if (user.confirmPassword.trim() === "") {
+        validationErrors.confirmPassword =
+          "Confirmar la contraseña es requerido";
+      } else if (user.confirmPassword != user.password) {
+        validationErrors.password = "La contraseñas no coinciden";
+        validationErrors.confirmPassword = "La contraseñas no coinciden";
+      }
     }
     // Si hay errores retorna false, sino retorna true
     if (Object.keys(validationErrors).length > 0) {
@@ -242,8 +311,8 @@ export default function RegisterUserInEvent(props) {
                     onChange={handleInputChange}
                   >
                     <option value="">Seleccionar</option>
-                    <option value="Admin">Administrador</option>
-                    <option value="Regis">Registrador</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Registrador">Registrador</option>
                     <option value="Miembro">Miembro</option>
                   </select>
                   {errors.userType && (
@@ -280,21 +349,21 @@ export default function RegisterUserInEvent(props) {
                         Estatus
                       </label>
                       <select
-                        name="estatus"
-                        id="estatus"
+                        name="status"
+                        id="status"
                         className={`w-full border rounded-[10px] h-[47px] px-3 text-[16px] text-[#AAB4C1] focus:text-black ${
-                          errors.estatus ? "border-red-500" : "border-[#AAB4C1]"
+                          errors.status ? "border-red-500" : "border-[#AAB4C1]"
                         }`}
-                        value={user.userType}
+                        value={user.status}
                         onChange={handleInputChange}
                       >
                         <option value="">Seleccionar</option>
                         <option value="Activo">Activo</option>
                         <option value="Inactivo">Inactivo</option>
                       </select>
-                      {errors.userType && (
+                      {errors.status && (
                         <p className="absolute text-[10px] -bottom-4 text-red-500 font-medium w-full text-end">
-                          {errors.userType}
+                          {errors.status}
                         </p>
                       )}
                     </div>
@@ -310,7 +379,7 @@ export default function RegisterUserInEvent(props) {
                             ? "border-red-500"
                             : "border-[#AAB4C1]"
                         }`}
-                        value={user.userType}
+                        value={user.confirmation}
                         onChange={handleInputChange}
                       >
                         <option value="">Seleccionar</option>
@@ -401,10 +470,8 @@ export default function RegisterUserInEvent(props) {
                   type="button"
                   className="inline-flex w-full justify-center rounded-md bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 sm:ml-3 sm:w-auto"
                   onClick={handleRegistration}
-                  disabled
                 >
-                  {/* Confirmar */}
-                  Aún no hago nada
+                  Confirmar
                 </button>
                 <button
                   type="button"

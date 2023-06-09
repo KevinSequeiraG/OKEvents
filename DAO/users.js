@@ -8,6 +8,7 @@ import {
 } from "firebase/firestore";
 import { database } from "@/BAO/firebaseConfig";
 import Swal from "sweetalert2";
+import { addUserMailToEvent } from "./event";
 
 const Toast = Swal.mixin({
   toast: true,
@@ -25,12 +26,39 @@ const RegisterNewUserFromLoginPage = async (user, authUid) => {
   const usersRef = doc(database, "okevents/data/users", authUid);
   await setDoc(usersRef, {
     imageUrl: user.imageUrl,
-    name: user.name,
+    name: user.name.trim().toLowerCase(),
     identification: user.identification,
     email: user.email.trim().toLowerCase(),
     phoneNumber: user.phoneNumber,
-  })
+  }, {merge:true})
     .then((docRef) => {
+      Toast.fire({
+        icon: "success",
+        title: `Usuario registrado correctamente`,
+      });
+      return true;
+    })
+    .catch((error) => {
+      console.error("Error adding document: ", error);
+      Toast.fire({
+        icon: "error",
+        title: `No se pudo registrar el usuario`,
+      });
+      return false;
+    });
+};
+
+const RegisterNewUserFromEvent = async (user, authUid, eventId) => {
+  const usersRef = doc(database, "okevents/data/users", authUid);
+  await setDoc(usersRef, {
+    imageUrl: user.imageUrl,
+    name: user.name.trim().toLowerCase(),
+    identification: user.identification,
+    email: user.email.trim().toLowerCase(),
+    phoneNumber: user.phoneNumber,
+  }, {merge:true})
+    .then(async () => {
+      await addUserMailToEvent(eventId, user.userType, user.email.trim().toLowerCase());
       Toast.fire({
         icon: "success",
         title: `Usuario registrado correctamente`,
@@ -50,21 +78,22 @@ const RegisterNewUserFromLoginPage = async (user, authUid) => {
 const ValidateUserExists = async (identification, email) => {
   try {
     const usersRef = collection(database, "okevents/data/users");
-    const qUserIdentification = query(usersRef, where("identification", "==", identification));
+    // const qUserIdentification = query(usersRef, where("identification", "==", identification));
     const qUserEmail = query(usersRef, where("email", "==", email));
-    const querySnapshotId = await getDocs(qUserIdentification);
+    // const querySnapshotId = await getDocs(qUserIdentification);
     const querySnapshotEmail = await getDocs(qUserEmail);
-    if (!querySnapshotId.empty || !querySnapshotEmail.empty) {
-      Toast.fire({
-        icon: "error",
-        title: `El usuario ingresado ya existe en la base de datos`,
-      });
-    }
-    return querySnapshotId.empty && querySnapshotEmail.empty;
+    // if (!querySnapshotId.empty || !querySnapshotEmail.empty) {
+    //   Toast.fire({
+    //     icon: "error",
+    //     title: `El usuario ingresado ya existe en la base de datos`,
+    //   });
+    // }
+    // return querySnapshotId.empty && querySnapshotEmail.empty;
+    return querySnapshotEmail.empty;
   } catch (error) {
     console.error("Error al validar el usuario:", error);
     return false;
   }
 };
 
-export { RegisterNewUserFromLoginPage, ValidateUserExists };
+export { RegisterNewUserFromLoginPage, ValidateUserExists, RegisterNewUserFromEvent };

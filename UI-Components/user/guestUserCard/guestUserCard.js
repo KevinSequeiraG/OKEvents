@@ -24,7 +24,7 @@ const GuestUserCard = (props) => {
           />
         ) : (
           <svg
-            className="h-9 w-9 bg-gray-500 rounded-full object-cover"
+            className="inline-block h-9 w-9 sm:h-12 sm:w-12 rounded-full cursor-pointer !object-cover bg-gray-500"
             xmlns="http://www.w3.org/2000/svg"
             width="21"
             height="24"
@@ -41,7 +41,9 @@ const GuestUserCard = (props) => {
         <div className="ml-3">
           <div className="font-bold  flex items-center">
             <p className="text-[13px] truncate mr-1">
-              {props.userName}
+              {props.userName.replace(/(^\w{1})|(\s+\w{1})/g, (letra) =>
+                    letra.toUpperCase()
+                  )}
             </p>
           </div>
           {props.userDNI ? (

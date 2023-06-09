@@ -21,7 +21,7 @@ const AddUsersModal = (props) => {
         </div>
         <BulkModal showAddBulkModal={showAddBulkModal} setShowBulkModal={setShowBulkModal} eventId={props.eventId}></BulkModal>
         {showAddUsersModal && (
-        <RegisterUserInEvent setRegisterUserModal={setShowAddUsersModal} isNotFromAutoRegis/>
+        <RegisterUserInEvent setRegisterUserModal={setShowAddUsersModal} eventId={props.eventId} setUpdateMemberList={props.setUpdateMemberList} updateMemberList={props.updateMemberList}/>
       )}
         </>
     )

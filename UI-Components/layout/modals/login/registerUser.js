@@ -2,6 +2,7 @@ import { RegisterNewUserFromLoginPage, ValidateUserExists } from "@/DAO/users";
 import { CreateUser, PasswordEyeIcon } from "@/public/svgs/Icons";
 import React, { useState } from "react";
 import ProfileImageUpload from "../../profileImageUpload";
+import Swal from "sweetalert2";
 
 export default function RegisterUser(props) {
   const [user, setUser] = useState({
@@ -17,6 +18,18 @@ export default function RegisterUser(props) {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
 
   const handleRegistration = async () => {
     // Acá va la lógica para registrar al usuario
@@ -49,6 +62,11 @@ export default function RegisterUser(props) {
               title: `Error al registrar en Auth`,
             });
           }
+        });
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: `El usuario ingresado ya existe en la base de datos`,
         });
       }
     }

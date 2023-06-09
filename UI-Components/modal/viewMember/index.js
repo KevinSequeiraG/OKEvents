@@ -11,11 +11,13 @@ const ViewMember = (props) => {
                     {/* <div className="absolute right-4 cursor-pointer" onClick={() => props.setShowAddUsersModal(false)}><XCloseIcon /></div> */}
                     <p className="text-center font-bold text-[1.4rem]">Miembro de evento</p>
                     <div className="mt-4 text-center">
-                        <p className="mb-2"><span className="font-bold">Nombre:</span> {props.memberData.name}</p>
-                        <p className="mb-2"><span className="font-bold">Correo electrónico:</span> {props.memberData.name}</p>
+                        <p className="mb-2"><span className="font-bold">Nombre:</span> {props.memberData.name.replace(/(^\w{1})|(\s+\w{1})/g, (letra) =>
+                    letra.toUpperCase()
+                  )}</p>
+                        <p className="mb-2"><span className="font-bold">Correo electrónico:</span> {props.memberData.email}</p>
                         <p className="mb-2"><span className="font-bold">Cédula:</span> {props.memberData.identification}</p>
                         <p className="mb-2"><span className="font-bold">ID de miembro:</span> {props.memberData.memberID}</p>
-                        <p><span className="font-bold">Teléfono:</span> {props.memberData.phone}</p>
+                        <p><span className="font-bold">Teléfono:</span> {props.memberData.phoneNumber}</p>
                     </div>
                     <div className="w-full flex justify-center">
                         <button onClick={()=>props.setShowViewMember(false)} className="bg-[#426CB4] text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-[#204585]">

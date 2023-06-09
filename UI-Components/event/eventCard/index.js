@@ -10,6 +10,7 @@ const EventCard = (props) => {
 
     function formatDate(timestamp) {
         const date = new Date(timestamp.seconds * 1000);
+
         const day = date.getDate();
         const month = date.getMonth() + 1; // Los meses en JavaScript se indexan desde 0
         const year = date.getFullYear();
@@ -22,9 +23,28 @@ const EventCard = (props) => {
     }
 
     useEffect(() => {
-        setStartDate(formatDate(props.eventData.startDate))
-        // setEndDate(formatDate(props.eventData.endDate))
-    }, [])
+      setStartDate(formatDate(props.eventData.startDate));
+      // setEndDate(formatDate(props.eventData.endDate))
+      //today's date
+      var today = new Date();
+
+      var fecha1 = new Date(props.eventData.startDate * 10000);
+      fecha1.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00
+console.log(fecha1)
+      var fecha2 = new Date(today);
+      fecha2.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00
+
+      if (fecha1 == fecha2) {
+        //STARTED
+        setEventState(1);
+      } else if (fecha1 < fecha2) {
+        //FINALIZED
+        setEventState(3);
+      } else if (fecha1 > fecha2) {
+        //PROGRAMMED
+        setEventState(2);
+      }
+    }, []);
 
 
     return (

@@ -6,6 +6,7 @@ import {
   getDocs,
   doc,
   updateDoc,
+  setDoc,
 } from "firebase/firestore";
 import { database } from "@/BAO/firebaseConfig";
 import Swal from "sweetalert2";
@@ -131,7 +132,9 @@ const handleEventState = async (eventId, loggeduid) => {
         return true;
       });
     } else {
-      console.log("No se encontró ningún evento con los criterios de búsqueda.");
+      console.log(
+        "No se encontró ningún evento con los criterios de búsqueda."
+      );
       return false;
     }
   } catch (error) {
@@ -140,6 +143,37 @@ const handleEventState = async (eventId, loggeduid) => {
   }
 };
 
+const addUserMailToEvent = async (eventId, userType, userEmail) => {
+  const eventData = await getEventById(eventId);
+  var eventToEdit = doc(database, `okevents/data/events`, eventData[0].id);
+  var adminMailsArray = eventData[0].adminMails;
+  var regisMailsArray = eventData[0].regisMails;
+  
+  if (userType == "Administrador" && !adminMailsArray.includes(userEmail)) {
+    adminMailsArray.push(userEmail);
+    await setDoc(eventToEdit, {
+      adminMails: adminMailsArray,
+    }, {merge:true});
+    Toast.fire({
+      icon: "success",
+      title: `Usuario registrado correctamente`,
+    });
+  } else if (userType == "Registrador" && !regisMailsArray.includes(userEmail)) {
+    regisMailsArray.push(userEmail);
+    await setDoc(eventToEdit, {
+      regisMails: regisMailsArray,
+    }, {merge:true});
+    Toast.fire({
+      icon: "success",
+      title: `Usuario registrado correctamente`,
+    });
+  } else{
+    Toast.fire({
+      icon: "error",
+      title: `El usuario ya existe en el evento`,
+    });
+  }
+};
 
 export {
   CreateEventNew,
@@ -147,4 +181,5 @@ export {
   getAllEvents,
   getEventById,
   handleEventState,
+  addUserMailToEvent,
 };

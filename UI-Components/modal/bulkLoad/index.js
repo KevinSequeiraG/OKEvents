@@ -715,7 +715,7 @@ export default function BulkModal(props) {
                   ) : (
                     <>
                       <p className="text-[16px] font-medium leading-4 tracking-normal text-left text-[#101217] mt-8 mb-1">
-                        Agregando usuarios a tu evento
+                        Agregando miembros a tu evento
                       </p>
                       <p className="text-[16px] font-medium leading-4 tracking-normal text-left text-[#101217] mb-10">
                         Esto podría tomar un tiempo, por favor{" "}
@@ -733,7 +733,7 @@ export default function BulkModal(props) {
                 <div className="bg-[#F8F9FA]  pb-5 pt-2 px-9 flex flex-row-reverse justify-between">
                   {!isLoading ? (
                     <>
-                      <button class="py-3 rounded-[10px] bg-[#426CB4] hover:bg-blue-600 hover:shadow-md px-8 text-white"
+                      <button className="py-3 rounded-[10px] bg-[#426CB4] hover:bg-blue-600 hover:shadow-md px-8 text-white"
                       onClick={
                         isLoading
                           ? null

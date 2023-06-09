@@ -34,7 +34,7 @@ const Navbar = ({ children }) => {
     <>
       {/* Si no tiene un usuario loggeado, aparece una animación */}
       <title>{`OKEvents`}</title>
-      <meta property="og:title" content={`Event+`} key="title" />
+      <meta property="og:title" content={"OKEvents"} key="title" />
       {/* <link rel="shortcut icon" href={"/navbarLogoIco.ico"} /> */}
       <meta httpEquiv="cache-control" content="no-cache" />
       <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
