@@ -85,13 +85,12 @@ const GuestUsers = () => {
   }, [eventId, updateMemberList])
 
   useEffect(() => {
-    console.log(usersData);
     const filteredData = usersData.filter(
       (user) =>
         user.identification.includes(adminInputFilter) ||
         user.memberID.includes(adminInputFilter)
     );
-
+    setUsersData(filteredData);
     if (adminInputFilter == '') {
       getMembersByEventId(eventId).then((members) => {
         setUsersData(members)
@@ -102,8 +101,8 @@ const GuestUsers = () => {
       );
     }
 
-    setUsersData(filteredData);
   }, [adminInputFilter])
+
 
 
   return (
