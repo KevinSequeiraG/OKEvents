@@ -22,7 +22,7 @@ const GuestUsers = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showAddUsersModal, setShowAddUsersModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
-  const { loggedUserUid } = useUserAuth();
+  const { loggedUserUid, loggedUser } = useUserAuth();
   const [allowButonForCloseTable, setAllowButonForCloseTable] = useState(false)
 
   function formatDate(timestamp) {
@@ -38,6 +38,16 @@ const GuestUsers = () => {
     return `${formattedDay}/${formattedMonth}/${year}`;
   }
 
+  const updateMembersByRegistered = () => {
+    getMembersByRegisteredBy(loggedUserUid).then((members) => {
+      if (members.length > 0) {
+        setAllowButonForCloseTable(true)
+      }
+    }).catch((error) => {
+      console.error(error);
+    })
+  }
+
   useEffect(() => {
     setIsLoadingData(true);
     getEventById(
@@ -48,6 +58,8 @@ const GuestUsers = () => {
       .then((response) => {
         if (response.length > 0) {
           setData(response[0]);
+          console.log(response[0]);
+          console.log(loggedUser);
           setEventId(response[0].eventId);
           setStartDate(formatDate(response[0].startDate));
           // setEndDate(formatDate(response[0].endDate))
@@ -141,12 +153,12 @@ const GuestUsers = () => {
               </div>
             </div>
             <div className="w-full space-x-0 sm:space-x-4">
-              <button
+              {data.adminMails.includes(loggedUser.email) && <button
                 onClick={() => setShowAddUsersModal(true)}
                 className="bg-[#426CB4] text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-[#204585] w-full sm:w-fit"
               >
                 Agregar usuarios
-              </button>
+              </button>}
               {allowButonForCloseTable && <button
                 onClick={() => {
                   handleEventState("948475", loggedUserUid);
@@ -156,11 +168,11 @@ const GuestUsers = () => {
               >
                 {isOpen ? "Cerrar" : "Abrir"} mesa
               </button>}
-              <button onClick={() => setShowDeleteEventModal(true)} className=" bg-red-800 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-red-700 w-full sm:w-fit">
+              {data.adminMails.includes(loggedUser.email) && <button onClick={() => setShowDeleteEventModal(true)} className=" bg-red-800 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-red-700 w-full sm:w-fit">
                 Eliminar evento
-              </button>
+              </button>}
             </div>
-            <Link
+            {data.adminMails.includes(loggedUser.email) && <Link
               href={{
                 pathname: "/editEvent",
                 query: { eventId: eventId },
@@ -170,7 +182,7 @@ const GuestUsers = () => {
               <button className="absolute top-[0%] right-3 sm:right-10 ml-8 bg-gray-400 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-gray-500">
                 <EditIcon />
               </button>
-            </Link>
+            </Link>}
           </div>
         </div>
       ) : (
@@ -191,6 +203,7 @@ const GuestUsers = () => {
         {usersData?.map((user, i) => {
           return (
             <GuestUserCard
+              updateMembersByRegistered={updateMembersByRegistered}
               imageProfileUrl={user.imageUrl}
               key={i}
               userName={user.name}
