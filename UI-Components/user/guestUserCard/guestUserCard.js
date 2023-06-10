@@ -5,13 +5,12 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 const GuestUserCard = (props) => {
-  const [showViewMember, setShowViewMember] = useState(false)
-  const [userData, setUserData] = useState(props.user)
+  const [showViewMember, setShowViewMember] = useState(false);
+  const [userData, setUserData] = useState(props.user);
 
   useEffect(() => {
-    // console.log(userData);
-  }, [])
-
+    setUserData(props.user);
+  }, [props.user]);
 
   return (
     <div className="flex flex-row justify-between mb-5 items-center w-[50%] mx-auto border px-5 py-3 rounded-xl">
