@@ -55,7 +55,7 @@ const GuestUserCard = (props) => {
               setShowViewMember(true)
             }}
             className={`${userData.present
-              ? "bg-gray-200 text-black"
+              ? "bg-[#800080] text-gray-100"
               : "bg-[#426CB4] text-white"
               } px-4 h-[36px] mx-2 rounded-[10px] font-bold text-[13px]`}
           >
@@ -65,8 +65,10 @@ const GuestUserCard = (props) => {
 
         {(!userData.present) && <button
           onClick={() => {
+            
             UpdatePresentState(userData.id, props.loggedUserUid).then(async () => {
               const member = await getMemberById(userData.id);
+              props.updateMembersByRegistered()
               if (member) {
                 setUserData(member)
                 // Realizar acciones adicionales con la información actualizada del miembro
@@ -75,8 +77,8 @@ const GuestUserCard = (props) => {
               }
             })
           }}
-          className={`${userData.present
-            ? "bg-gray-200 text-black"
+          className={`${userData.status == "Inactivo"
+            ? "bg-gray-200 text-gray-400 pointer-events-none"
             : "bg-[#426CB4] text-white"
             } px-4 h-[36px] mx-2 rounded-[10px] font-bold text-[13px]`}
         >
