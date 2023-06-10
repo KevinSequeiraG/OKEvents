@@ -28,7 +28,7 @@ const Home = () => {
             </h1>
             <Link href={"createEvent"}><button className="bg-[#426CB4] text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-[#204585]">Crear evento nuevo</button></Link>
 
-            <div className="grid md:grid-cols-4 gap-y-5 mt-5 md:mt-10">
+            <div className="grid md:grid-cols-4 gap-y-5 gap-x-5 mt-5 md:mt-10">
                 {eventsData.map(eventData => {
                     return (<EventCard eventData={eventData} />)
                 })}

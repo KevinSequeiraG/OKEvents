@@ -8,6 +8,11 @@ const GuestUserCard = (props) => {
   const [showViewMember, setShowViewMember] = useState(false)
   const [userData, setUserData] = useState(props.user)
 
+  useEffect(() => {
+    // console.log(userData);
+  }, [])
+
+
   return (
     <div className="flex flex-row justify-between mb-5 items-center w-[50%] mx-auto border px-5 py-3 rounded-xl">
       <div className="flex flex-row items-center">
@@ -42,40 +47,44 @@ const GuestUserCard = (props) => {
         </div>
       </div>
 
-      {userData.present ?
-        <button
+      <div className="flex items-center">
+        <div className="mx-2 px-4 py-2 bg-green-400 rounded-xl text-gray-100">{userData.confirmation=="no"?"No confirmado":"Confirmado"}</div>
+        <div className="mx-2 px-4 py-2 bg-blue-400 rounded-xl text-gray-100">{userData.status}</div>
+        {userData.present ?
+          <button
+            onClick={() => {
+              setShowViewMember(true)
+            }}
+            className={`${userData.present
+              ? "bg-gray-200 text-black"
+              : "bg-[#426CB4] text-white"
+              } px-4 h-[36px] mx-2 rounded-[10px] font-bold text-[13px]`}
+          >
+            Ver perfil
+          </button>
+          : null}
+
+        {(!userData.present) && <button
           onClick={() => {
-            setShowViewMember(true)
+            UpdatePresentState(userData.id, props.loggedUserUid).then(async () => {
+              const member = await getMemberById(userData.id);
+              if (member) {
+                setUserData(member)
+                // Realizar acciones adicionales con la información actualizada del miembro
+              } else {
+                console.log("No se pudo obtener la información actualizada del miembro.");
+              }
+            })
           }}
           className={`${userData.present
             ? "bg-gray-200 text-black"
             : "bg-[#426CB4] text-white"
-            } px-4 h-[36px] rounded-[10px] font-bold text-[13px]`}
+            } px-4 h-[36px] mx-2 rounded-[10px] font-bold text-[13px]`}
         >
-          Ver perfil
-        </button>
-        : null}
-
-      {!userData.present && <button
-        onClick={() => {
-          UpdatePresentState(userData.id, props.loggedUserUid).then(async () => {
-            const member = await getMemberById(userData.id);
-            if (member) {
-              setUserData(member)
-              // Realizar acciones adicionales con la información actualizada del miembro
-            } else {
-              console.log("No se pudo obtener la información actualizada del miembro.");
-            }
-          })
-        }}
-        className={`${userData.present
-          ? "bg-gray-200 text-black"
-          : "bg-[#426CB4] text-white"
-          } px-4 h-[36px] rounded-[10px] font-bold text-[13px]`}
-      >
-        Check in
-      </button>}
-      <ViewMember showViewMember={showViewMember} setShowViewMember={setShowViewMember} memberData={userData} />
+          Check in
+        </button>}
+      </div>
+      {showViewMember && <ViewMember showViewMember={showViewMember} setShowViewMember={setShowViewMember} memberData={userData} />}
     </div>
   );
 };

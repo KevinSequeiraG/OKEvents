@@ -23,7 +23,6 @@ const EditEvent = () => {
         if (response.length > 0) {
           router?.query?.eventId && localStorage.setItem("savedEventIdEdit", JSON.stringify(router.query.eventId));
         }
-        console.log(response[0]);
         const date = new Date(response[0].startDate.seconds * 1000);
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');

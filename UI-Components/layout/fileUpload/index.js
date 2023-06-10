@@ -19,9 +19,7 @@ export default function FileUpload({setArrayUsers}) {
         const worksheet = workbook.Sheets[sheetName];
         const json = XLSX.utils.sheet_to_json(worksheet);
         setArrayUsers(json);
-        console.log(json);
       };
-      console.log(e.target.files[0])
       if (e.target.files[0]!=undefined) {
         reader.readAsArrayBuffer(e.target.files[0]);
         setFileName(e.target.files[0].name);

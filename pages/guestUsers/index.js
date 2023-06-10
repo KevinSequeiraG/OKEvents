@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import LoadingAnimation from "@/UI-Components/layout/loadingAnimation";
 import { useUserAuth } from "../../BAO/userAuthContext";
-import { getMembersByEventId } from "@/DAO/members";
+import { getMembersByEventId, getMembersByRegisteredBy } from "@/DAO/members";
 import SearchInput from "@/UI-Components/layout/searchInput";
 import Link from "next/link";
 import DeleteEventModal from "@/UI-Components/modal/deleteEvent";
@@ -23,6 +23,7 @@ const GuestUsers = () => {
   const [showAddUsersModal, setShowAddUsersModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const { loggedUserUid } = useUserAuth();
+  const [allowButonForCloseTable, setAllowButonForCloseTable] = useState(false)
 
   function formatDate(timestamp) {
     const date = new Date(timestamp.seconds * 1000);
@@ -48,7 +49,6 @@ const GuestUsers = () => {
         if (response.length > 0) {
           setData(response[0]);
           setEventId(response[0].eventId);
-          console.log(data);
           setStartDate(formatDate(response[0].startDate));
           // setEndDate(formatDate(response[0].endDate))
           setIsOpen(response[0].isOpen);
@@ -70,6 +70,13 @@ const GuestUsers = () => {
     if (eventId != undefined) {
       getMembersByEventId(eventId).then((members) => {
         setUsersData(members)
+        getMembersByRegisteredBy(loggedUserUid).then((members) => {
+          if (members.length > 0) {
+            setAllowButonForCloseTable(true)
+          }
+        }).catch((error) => {
+          console.error(error);
+        })
       })
         .catch((error) => {
           console.error("Ocurrió un error al obtener los miembros:", error);
@@ -78,6 +85,7 @@ const GuestUsers = () => {
   }, [eventId, updateMemberList])
 
   useEffect(() => {
+    console.log(usersData);
     const filteredData = usersData.filter(
       (user) =>
         user.identification.includes(adminInputFilter) ||
@@ -85,7 +93,6 @@ const GuestUsers = () => {
     );
 
     if (adminInputFilter == '') {
-      console.log("adsfa");
       getMembersByEventId(eventId).then((members) => {
         setUsersData(members)
       }
@@ -105,11 +112,10 @@ const GuestUsers = () => {
         <div>
           <img
             className="object-cover md:h-64 w-full"
-            src={`${
-              data?.imageUrl
-                ? data?.imageUrl
-                : "../Images/defaultEventPicture.png"
-            }`}
+            src={`${data?.imageUrl
+              ? data?.imageUrl
+              : "../Images/defaultEventPicture.png"
+              }`}
             alt="Foto de perfil"
           />
           <div className="w-full p-6 bg-gray-100 relative">
@@ -134,14 +140,6 @@ const GuestUsers = () => {
                   {startDate}
                 </div>
               </div>
-              {/* <div>
-                            <p className="font-bold text-[12px] tracking-normal leading-4 text-[#101217] mb-1">
-                                Fecha de finalización
-                            </p>
-                            <div className="flex text-[16px] tracking-normal leading-5 text-[#899592] items-center">
-                                {endDate}
-                            </div>
-                        </div> */}
             </div>
             <div className="w-full space-x-0 sm:space-x-4">
               <button
@@ -150,7 +148,7 @@ const GuestUsers = () => {
               >
                 Agregar usuarios
               </button>
-              <button
+              {allowButonForCloseTable && <button
                 onClick={() => {
                   handleEventState("948475", loggedUserUid);
                   setIsOpen(!isOpen);
@@ -158,7 +156,7 @@ const GuestUsers = () => {
                 className=" bg-gray-600 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-gray-700 w-full sm:w-fit"
               >
                 {isOpen ? "Cerrar" : "Abrir"} mesa
-              </button>
+              </button>}
               <button onClick={() => setShowDeleteEventModal(true)} className=" bg-red-800 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-red-700 w-full sm:w-fit">
                 Eliminar evento
               </button>
@@ -166,7 +164,7 @@ const GuestUsers = () => {
             <Link
               href={{
                 pathname: "/editEvent",
-                query: {eventId: eventId},
+                query: { eventId: eventId },
               }}
               as={"/editEvent"}
             >
@@ -188,11 +186,10 @@ const GuestUsers = () => {
             setAdminInputFilter={setAdminInputFilter}
           />
         </div>
-        <p className="text-center font-bold text-[1.6rem] mt-10 mb-10">Miembros de evento</p>
         <p className="text-center font-bold text-[1.6rem] mt-20 mb-10">
           Miembros de evento
         </p>
-        {usersData.map((user, i) => {
+        {usersData?.map((user, i) => {
           return (
             <GuestUserCard
               imageProfileUrl={user.imageUrl}

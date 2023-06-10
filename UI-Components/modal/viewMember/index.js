@@ -9,9 +9,11 @@ const ViewMember = (props) => {
     const [hourArrived, setHourArrived] = useState("")
 
     useEffect(() => {
-        getUserByUid(props.memberData.registeredBy).then((user) => {
-            setUserData(user)
-        })
+        if (props.memberData.registeredBy != "" && props.memberData.registeredBy != undefined) {
+            getUserByUid(props.memberData.registeredBy).then((user) => {
+                setUserData(user)
+            })
+        }
 
 
         // Combina los valores de nanosegundos y segundos en milisegundos

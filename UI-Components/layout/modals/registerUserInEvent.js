@@ -83,7 +83,6 @@ export default function RegisterUserInEvent(props) {
             }
           );
         } else {
-          console.log(res);
           Toast.fire({
             icon: "error",
             title: `Error al registrar en Auth`,
