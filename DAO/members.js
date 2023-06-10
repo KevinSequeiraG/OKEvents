@@ -5,24 +5,55 @@ export { getMembersByEventId };
 import Swal from "sweetalert2";
 
 const getMembersByEventId = async (eventId) => {
-  try {
-    const membersCollection = collection(database, "okevents/data/members");
-    const q = query(
-      membersCollection,
-      where("eventId", "==", eventId),
-      orderBy("createdAt", "desc")
-    );
-    const querySnapshot = await getDocs(q);
+  if (eventId) {
+    try {
+      const membersCollection = collection(database, "okevents/data/members");
+      const q = query(
+        membersCollection,
+        where("eventId", "==", eventId),
+        orderBy("createdAt", "desc")
+      );
+      const querySnapshot = await getDocs(q);
 
-    const members = querySnapshot.docs.map((doc) => {
-      const memberData = doc.data();
-      return { ...memberData, id: doc.id }; // Agregar el ID como propiedad "id"
-    });
+      const members = querySnapshot.docs.map((doc) => {
+        const memberData = doc.data();
+        return { ...memberData, id: doc.id }; // Agregar el ID como propiedad "id"
+      });
 
-    return members;
-  } catch (error) {
-    console.error("Error al obtener los miembros por eventId:", error);
-    return [];
+      return members;
+    } catch (error) {
+      console.error("Error al obtener los miembros por eventId:", error);
+      return [];
+    }
+  }
+};
+
+const getMembersByRegisteredBy = async (uid) => {
+  if (uid) {
+    try {
+      const membersCollection = collection(database, "okevents/data/members");
+      const q = query(
+        membersCollection,
+        where("registeredBy", "==", uid)
+      );
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        return []; // Si no hay miembros, retorna un array vacío
+      }
+
+      const members = querySnapshot.docs.map((doc) => {
+        const memberData = doc.data();
+        return { ...memberData, id: doc.id }; // Agregar el ID como propiedad "id"
+      });
+
+      return members;
+    } catch (error) {
+      console.error("Error al obtener los miembros por register by:", error);
+      return [];
+    }
+  } else {
+    return []; // Si no se proporciona un UID, retorna un array vacío
   }
 };
 
@@ -51,59 +82,52 @@ const bulkMemberUpload = async (members, eventId) => {
   const memberRef = collection(database, "okevents/data/members");
   const date = new Date();
   const memberDontExist = await memberNoExistsBulk(eventId, members);
-  if (memberDontExist.length!=0) {
+  if (memberDontExist.length != 0) {
     memberDontExist.map((data) => {
       addDoc(memberRef, {
         eventId: eventId,
         imageUrl: "",
-        confirmation: `${
-          data.hasOwnProperty("Estatus_2") ? data.Estatus_1.toString().trim().toLowerCase() : ""
-        }`,
-        memberID: `${
-          data.hasOwnProperty("Id") ? data.Id.toString().trim().toLowerCase() : ""
-        }`,
-        name: `${
-          data.hasOwnProperty("Nombre") ? data.Nombre.trim().toLowerCase() : ""
-        }`,
-        identification: `${
-          data.hasOwnProperty("Número_Cédula")
-            ? data.Número_Cédula.toString().trim().toLowerCase()
-            : ""
-        }`,
-        email: `${
-          data.hasOwnProperty("Correo")
-            ? data.Correo.trim().toLowerCase()
-            : ""
-        }`,
-        phoneNumber: `${
-          data.hasOwnProperty("Teléfono")
-            ? data.Teléfono.toString().trim().toLowerCase()
-            : ""
-        }`,
-        status: `${
-          data.hasOwnProperty("Estatus_1") ? data.Estatus_1.trim() : ""
-        }`,
+        confirmation: `${data.hasOwnProperty("Estatus_2") ? data.Estatus_1.toString().trim().toLowerCase() : ""
+          }`,
+        memberID: `${data.hasOwnProperty("Id") ? data.Id.toString().trim().toLowerCase() : ""
+          }`,
+        name: `${data.hasOwnProperty("Nombre") ? data.Nombre.trim().toLowerCase() : ""
+          }`,
+        identification: `${data.hasOwnProperty("Número_Cédula")
+          ? data.Número_Cédula.toString().trim().toLowerCase()
+          : ""
+          }`,
+        email: `${data.hasOwnProperty("Correo")
+          ? data.Correo.trim().toLowerCase()
+          : ""
+          }`,
+        phoneNumber: `${data.hasOwnProperty("Teléfono")
+          ? data.Teléfono.toString().trim().toLowerCase()
+          : ""
+          }`,
+        status: `${data.hasOwnProperty("Estatus_1") ? data.Estatus_1.trim() : ""
+          }`,
         createdAt: date,
         present: false,
         arrivalDate: "",
         registeredBy: "",
       })
-       .then((docRef) => {
+        .then((docRef) => {
           Toast.fire({
             icon: "success",
             title: `Validación y creación de los miembros correctamente`,
           });
           return true;
-       })
-       .catch((error) => {
-         Toast.fire({
-           icon: "error",
-           title: `No se pudo crear los miembros`,
-         });
-         return false;
-       });
-  }); 
-  }else{
+        })
+        .catch((error) => {
+          Toast.fire({
+            icon: "error",
+            title: `No se pudo crear los miembros`,
+          });
+          return false;
+        });
+    });
+  } else {
     Toast.fire({
       icon: "error",
       title: `Los miembro ingresados ya se encuentran ingresados en el evento`,
@@ -144,8 +168,6 @@ const memberNoExists = async (eventId, memberID, identification) => {
 
   const querySnapshotId = await getDocs(qMemberID);
   const querySnapshotIdentif = await getDocs(qMemberIdentification);
-  console.log(memberID, identification)
-  console.log("whyyy", !querySnapshotId.empty || !querySnapshotIdentif.empty)
   if (!querySnapshotId.empty || !querySnapshotIdentif.empty) {
     Toast.fire({
       icon: "error",
@@ -158,20 +180,20 @@ const memberNoExists = async (eventId, memberID, identification) => {
 
 const memberNoExistsBulk = async (eventId, members) => {
   const memebersGood = [];
-  
+
   for (const data of members) {
     const memberRef = collection(database, "okevents/data/members");
     const qMemberID = query(memberRef, where("eventId", "==", eventId), where("memberID", "==", data.Id));
     const qMemberIdentification = query(memberRef, where("eventId", "==", eventId), where("identification", "==", data.Número_Cédula));
-  
+
     const querySnapshotId = await getDocs(qMemberID);
     const querySnapshotIdentif = await getDocs(qMemberIdentification);
-    
+
     if (querySnapshotId.empty || querySnapshotIdentif.empty) {
       memebersGood.push(data);
     }
   }
-  
+
   return memebersGood;
 };
 
@@ -206,4 +228,4 @@ const UpdatePresentState = async (memberId, loggedUserUid) => {
   }
 };
 
-export { downloadFileBulkUpload, bulkMemberUpload, memberNoExists, addMember, UpdatePresentState, getMemberById };
+export { downloadFileBulkUpload, bulkMemberUpload, memberNoExists, addMember, UpdatePresentState, getMemberById, getMembersByRegisteredBy };
