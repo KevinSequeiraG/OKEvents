@@ -10,6 +10,7 @@ import { getMembersByEventId, getMembersByRegisteredBy } from "@/DAO/members";
 import SearchInput from "@/UI-Components/layout/searchInput";
 import Link from "next/link";
 import DeleteEventModal from "@/UI-Components/modal/deleteEvent";
+import Swal from "sweetalert2";
 
 const GuestUsers = () => {
   const [usersData, setUsersData] = useState([])
@@ -24,6 +25,7 @@ const GuestUsers = () => {
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const { loggedUserUid, loggedUser } = useUserAuth();
   const [allowButonForCloseTable, setAllowButonForCloseTable] = useState(false)
+  const [allowButonForCheckIn, setAllowButonForCheckIn] = useState(false)
 
   function formatDate(timestamp) {
     const date = new Date(timestamp.seconds * 1000);
@@ -48,6 +50,25 @@ const GuestUsers = () => {
     })
   }
 
+  const compareDate = (startDate) => {
+    var todayDate = new Date();
+    const eventStartDate = new Date(startDate.seconds * 1000);
+
+    if (
+      todayDate.getFullYear() === eventStartDate.getFullYear() &&
+      todayDate.getMonth() === eventStartDate.getMonth() &&
+      todayDate.getDate() === eventStartDate.getDate()
+    ) {
+      setAllowButonForCheckIn(true);
+    } else{
+      Swal.fire({
+        icon: 'info',
+        title: 'Evento cerrado',
+        text: 'No podrás registrar el ingreso de los miembros hasta el día del evento.',
+      })
+    }
+  };
+
   useEffect(() => {
     setIsLoadingData(true);
     getEventById(
@@ -58,10 +79,9 @@ const GuestUsers = () => {
       .then((response) => {
         if (response.length > 0) {
           setData(response[0]);
-          console.log(response[0]);
-          console.log(loggedUser);
           setEventId(response[0].eventId);
           setStartDate(formatDate(response[0].startDate));
+          compareDate(response[0].startDate)
           // setEndDate(formatDate(response[0].endDate))
           setIsOpen(response[0].isOpen);
           router?.query?.eventId &&
@@ -161,7 +181,7 @@ const GuestUsers = () => {
               </button>}
               {allowButonForCloseTable && <button
                 onClick={() => {
-                  handleEventState("948475", loggedUserUid);
+                  handleEventState(eventId ? eventId : data.id, loggedUserUid);
                   setIsOpen(!isOpen);
                 }}
                 className=" bg-gray-600 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-gray-700 w-full sm:w-fit"
@@ -211,6 +231,7 @@ const GuestUsers = () => {
               activeUser={user.present}
               user={user}
               loggedUserUid={loggedUserUid}
+              allowButonForCheckIn={allowButonForCheckIn}
             />)
         })}
       </div>

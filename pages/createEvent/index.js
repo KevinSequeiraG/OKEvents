@@ -2,6 +2,7 @@ import { CreateEventNew, ValidateEventId } from "@/DAO/event";
 import ImageUplaod from "@/UI-Components/layout/imageUpload";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useUserAuth } from "@/BAO/userAuthContext";
 
 const CreateEvent = () => {
   const [event, setEvent] = useState({
@@ -39,9 +40,11 @@ const CreateEvent = () => {
     generateRandomEventId();
   }, []);
 
+  const { loggedUser } = useUserAuth();
+
   const handleCreate = () => {
     if (formValidation()) {
-      CreateEventNew(event);
+      CreateEventNew(event, loggedUser.email);
       router.push("/home");
     }
   };

@@ -23,13 +23,14 @@ const Toast = Swal.mixin({
   },
 });
 
-const CreateEventNew = (event) => {
+const CreateEventNew = (event, loggedUserEmail) => {
   const eventsRef = collection(database, "okevents/data/events");
   const startDate = new Date(event.startDate);
   const adjustedStartDate = new Date(event.startDate + 'T00:00:00');
   adjustedStartDate.setHours(adjustedStartDate.getHours() + adjustedStartDate.getTimezoneOffset() / 60);
 
   const endDate = new Date(event.finishDate);
+  const emptyArrayMails = [loggedUserEmail];
   const emptyArray = [];
   addDoc(eventsRef, {
     name: event.name,
@@ -37,8 +38,8 @@ const CreateEventNew = (event) => {
     description: event.description,
     eventType: event.eventType,
     startDate: adjustedStartDate,
-    regisMails: emptyArray,
-    adminMails: emptyArray,
+    regisMails: emptyArrayMails,
+    adminMails: emptyArrayMails,
     // endDate: endDate,
     isOpen: true,
     closedBy: emptyArray,
@@ -65,11 +66,13 @@ const CreateEventNew = (event) => {
 const UpdateEvent = (event) => {
   const eventToEdit = doc(database, "okevents/data/events", event.id);
   const startDate = new Date(event.startDate);
+  const adjustedStartDate = new Date(event.startDate + 'T00:00:00');
+  adjustedStartDate.setHours(adjustedStartDate.getHours() + adjustedStartDate.getTimezoneOffset() / 60);
   updateDoc(eventToEdit, {
     name: event.name,
     description: event.description,
     eventType: event.eventType,
-    startDate: startDate,
+    startDate: adjustedStartDate,
     imageUrl: event.imageUrl ? event.imageUrl : "",
   })
     .then(() => {
