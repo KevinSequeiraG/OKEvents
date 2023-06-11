@@ -26,14 +26,17 @@ const Toast = Swal.mixin({
 const CreateEventNew = (event) => {
   const eventsRef = collection(database, "okevents/data/events");
   const startDate = new Date(event.startDate);
-  // const endDate = new Date(event.finishDate);
+  const adjustedStartDate = new Date(event.startDate + 'T00:00:00');
+  adjustedStartDate.setHours(adjustedStartDate.getHours() + adjustedStartDate.getTimezoneOffset() / 60);
+
+  const endDate = new Date(event.finishDate);
   const emptyArray = [];
   addDoc(eventsRef, {
     name: event.name,
     eventId: event.eventId,
     description: event.description,
     eventType: event.eventType,
-    startDate: startDate,
+    startDate: adjustedStartDate,
     regisMails: emptyArray,
     adminMails: emptyArray,
     // endDate: endDate,
