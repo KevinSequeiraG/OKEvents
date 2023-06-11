@@ -83,7 +83,7 @@ const GuestUsers = () => {
           setStartDate(formatDate(response[0].startDate));
           compareDate(response[0].startDate)
           // setEndDate(formatDate(response[0].endDate))
-          setIsOpen(response[0].isOpen);
+          setIsOpen(!response[0].closedBy.includes(loggedUserUid));
           router?.query?.eventId &&
             localStorage.setItem(
               "savedEventId",
@@ -184,7 +184,7 @@ const GuestUsers = () => {
                   handleEventState(eventId ? eventId : data.id, loggedUserUid);
                   setIsOpen(!isOpen);
                 }}
-                className=" bg-gray-600 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-gray-700 w-full sm:w-fit"
+                className={`${isOpen? "bg-gray-600 hover:bg-gray-700":"bg-green-700 hover:bg-green-800"} text-gray-100 px-5 py-3 rounded-xl mt-4  w-full sm:w-fit`}
               >
                 {isOpen ? "Cerrar" : "Abrir"} mesa
               </button>}
@@ -232,6 +232,7 @@ const GuestUsers = () => {
               user={user}
               loggedUserUid={loggedUserUid}
               allowButonForCheckIn={allowButonForCheckIn}
+              isTableOpen={isOpen}
             />)
         })}
       </div>

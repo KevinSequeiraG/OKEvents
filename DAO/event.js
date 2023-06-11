@@ -41,7 +41,7 @@ const CreateEventNew = (event, loggedUserEmail) => {
     regisMails: emptyArrayMails,
     adminMails: emptyArrayMails,
     // endDate: endDate,
-    isOpen: true,
+    // isOpen: true,
     closedBy: emptyArray,
     imageUrl: event.imageUrl ? event.imageUrl : "",
     active: true,
@@ -196,7 +196,7 @@ const handleEventState = async (eventId, loggeduid) => {
       }
 
       await updateDoc(docRef, { closedBy: updatedClosedBy }).then(() => {
-        let title = "Se ha actualizado el campo closedBy";
+        let title = "Se ha actualizado el estado de la mesa";
         Toast.fire({
           icon: "success",
           title: title,

@@ -98,7 +98,7 @@ const GuestUserCard = (props) => {
               }
             })
           }}
-          className={`${userData.status == "Inactivo" || !props.allowButonForCheckIn
+          className={`${userData.status == "Inactivo" || !props.allowButonForCheckIn || !props.isTableOpen
             ? "bg-gray-200 text-gray-400 pointer-events-none"
             : "bg-[#426CB4] text-white"
             } px-4 h-[36px] mx-2 rounded-[10px] font-bold text-[13px]`}
