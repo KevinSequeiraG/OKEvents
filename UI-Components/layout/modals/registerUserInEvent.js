@@ -383,7 +383,7 @@ export default function RegisterUserInEvent(props) {
                       >
                         <option value="">Seleccionar</option>
                         <option value="Confirmado">Confirmado</option>
-                        <option value="No">No confirmado</option>
+                        <option value="no">No confirmado</option>
                       </select>
                       {errors.confirmation && (
                         <p className="absolute text-[10px] -bottom-4 text-red-500 font-medium w-full text-end">
