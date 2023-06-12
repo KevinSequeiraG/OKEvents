@@ -11,6 +11,7 @@ import SearchInput from "@/UI-Components/layout/searchInput";
 import Link from "next/link";
 import DeleteEventModal from "@/UI-Components/modal/deleteEvent";
 import Swal from "sweetalert2";
+import {createReport} from "@/DAO/reports"
 
 const GuestUsers = () => {
   const [usersData, setUsersData] = useState([])
@@ -191,6 +192,14 @@ const GuestUsers = () => {
               {data.adminMails.includes(loggedUser.email) && <button onClick={() => setShowDeleteEventModal(true)} className=" bg-red-800 text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-red-700 w-full sm:w-fit">
                 Eliminar evento
               </button>}
+
+              {data.adminMails.includes(loggedUser.email) && <button
+                onClick={() => createReport(eventId)}
+                className="bg-[#35CA75] text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-[#64d093] w-full sm:w-fit"
+              >
+                Descargar reporte
+              </button>}
+
             </div>
             {data.adminMails.includes(loggedUser.email) && <Link
               href={{
