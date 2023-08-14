@@ -42,7 +42,7 @@ const GuestUsers = () => {
   }
 
   const updateMembersByRegistered = () => {
-    getMembersByRegisteredBy(loggedUserUid).then((members) => {
+    getMembersByRegisteredBy(loggedUserUid, eventId).then((members) => {
       if (members.length > 0) {
         setAllowButonForCloseTable(true)
       }
@@ -103,7 +103,7 @@ const GuestUsers = () => {
     if (eventId != undefined) {
       getMembersByEventId(eventId).then((members) => {
         setUsersData(members)
-        getMembersByRegisteredBy(loggedUserUid).then((members) => {
+        getMembersByRegisteredBy(loggedUserUid, eventId).then((members) => {
           if (members.length > 0) {
             setAllowButonForCloseTable(true)
           }

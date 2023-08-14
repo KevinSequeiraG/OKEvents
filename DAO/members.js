@@ -28,13 +28,14 @@ const getMembersByEventId = async (eventId) => {
   }
 };
 
-const getMembersByRegisteredBy = async (uid) => {
+const getMembersByRegisteredBy = async (uid, eventId) => {
   if (uid) {
     try {
       const membersCollection = collection(database, "okevents/data/members");
       const q = query(
         membersCollection,
-        where("registeredBy", "==", uid)
+        where("registeredBy", "==", uid),
+        where("eventId", "==", eventId),
       );
       const querySnapshot = await getDocs(q);
 
@@ -183,8 +184,8 @@ const memberNoExistsBulk = async (eventId, members) => {
 
   for (const data of members) {
     const memberRef = collection(database, "okevents/data/members");
-    const qMemberID = query(memberRef, where("eventId", "==", eventId), where("memberID", "==", data.Id));
-    const qMemberIdentification = query(memberRef, where("eventId", "==", eventId), where("identification", "==", data.Número_Cédula));
+    const qMemberID = query(memberRef, where("eventId", "==", eventId), where("memberID", "==", data.Id.toString()));
+    const qMemberIdentification = query(memberRef, where("eventId", "==", eventId), where("identification", "==", data.Número_Cédula.toString()));
 
     const querySnapshotId = await getDocs(qMemberID);
     const querySnapshotIdentif = await getDocs(qMemberIdentification);
