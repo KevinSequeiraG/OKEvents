@@ -74,12 +74,12 @@ const Toast = Swal.mixin({
 const downloadFileBulkUpload = () => {
   var link = document.createElement("a");
   link.href =
-    "https://firebasestorage.googleapis.com/v0/b/okevents-f3a50.appspot.com/o/bulkLoad%2FCarga%20Masiva%20OKEvents.xlsx?alt=media&token=309ed0f7-6987-41b0-8edb-3b42142c3273";
+    "https://firebasestorage.googleapis.com/v0/b/okevents-f3a50.appspot.com/o/bulkLoad%2FCarga%20Masiva%20OKEvents.xlsx?alt=media&token=4e096e44-794f-4b07-8eb5-c216863db0c5";
   link.download = "Carga Masiva.xlsx";
   link.dispatchEvent(new MouseEvent("click"));
 };
 
-const bulkMemberUpload = async (members, eventId) => {
+const bulkMemberUpload = async (members, eventId, setIsLoading) => {
   const memberRef = collection(database, "okevents/data/members");
   const date = new Date();
   const memberDontExist = await memberNoExistsBulk(eventId, members);
@@ -88,7 +88,7 @@ const bulkMemberUpload = async (members, eventId) => {
       addDoc(memberRef, {
         eventId: eventId,
         imageUrl: "",
-        confirmation: `${data.hasOwnProperty("Estatus_2") ? data.Estatus_1.toString().trim().toLowerCase() : ""
+        confirmation: `${data.hasOwnProperty("Estado_2") ? data.Estado_2.toString().trim().toLowerCase() : ""
           }`,
         memberID: `${data.hasOwnProperty("Id") ? data.Id.toString().trim().toLowerCase() : ""
           }`,
@@ -113,13 +113,13 @@ const bulkMemberUpload = async (members, eventId) => {
         arrivalDate: "",
         registeredBy: "",
       })
-        .then((docRef) => {
-          Toast.fire({
-            icon: "success",
-            title: `Validación y creación de los miembros correctamente`,
-          });
-          return true;
-        })
+        // .then((docRef) => {
+        //   Toast.fire({
+        //     icon: "success",
+        //     title: `Validación y creación de los miembros correctamente`,
+        //   });
+        //   return true;
+        // })
         .catch((error) => {
           Toast.fire({
             icon: "error",
@@ -128,6 +128,13 @@ const bulkMemberUpload = async (members, eventId) => {
           return false;
         });
     });
+    setTimeout(function () {
+      Toast.fire({
+        icon: "success",
+        title: `Validación y creación de los miembros correctamente`,
+      });
+      return true;
+    }, 500);
   } else {
     Toast.fire({
       icon: "error",

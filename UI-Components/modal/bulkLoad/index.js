@@ -3,18 +3,27 @@ import FileUpload from "../../layout/fileUpload";
 import { downloadFileBulkUpload, bulkMemberUpload } from "@/DAO/members";
 
 export default function BulkModal(props) {
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [arrayUsers, setArrayUsers] = useState([]);
 
   const handleDownload = () => {
     downloadFileBulkUpload();
   };
 
+  const handelUpload = async () => {
+    setIsLoading(true);
+    await bulkMemberUpload(arrayUsers, props.eventId);
+      props.setUpdateMemberList(!props.updateMemberList);
+      props.setRegisterUserModal(false);
+      props.setShowBulkModal(false);
+      props.hiddemodal(false);
+      setIsLoading(false);
+  };
+
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[51] ${
-        props.showAddBulkModal ? "" : "hidden"
-      }`}
+      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[51] ${props.showAddBulkModal ? "" : "hidden"
+        }`}
     >
       <>
         <div className="mx-auto justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-[60] outline-none focus:outline-none max-w-xl max-h-fit my-auto">
@@ -73,13 +82,13 @@ export default function BulkModal(props) {
                   {!isLoading ? (
                     <>
                       <button className="py-3 rounded-[10px] bg-[#426CB4] hover:bg-blue-600 hover:shadow-md px-8 text-white"
-                      onClick={
-                        isLoading
-                          ? null
-                          : () => {
-                            bulkMemberUpload(arrayUsers, props.eventId);
+                        onClick={
+                          isLoading
+                            ? null
+                            : () => {
+                              handelUpload();
                             }
-                      }
+                        }
                       >
                         Subir
                       </button>

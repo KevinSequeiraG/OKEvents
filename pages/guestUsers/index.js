@@ -193,7 +193,7 @@ const GuestUsers = () => {
                 Eliminar evento
               </button>}
 
-              {data.adminMails.includes(loggedUser.email) && <button
+              {data.adminMails.includes(loggedUser.email) && allowButonForCheckIn && <button
                 onClick={() => createReport(eventId)}
                 className="bg-[#35CA75] text-gray-100 px-5 py-3 rounded-xl mt-4 hover:bg-[#64d093] w-full sm:w-fit"
               >

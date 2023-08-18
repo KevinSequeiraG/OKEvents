@@ -19,7 +19,7 @@ const AddUsersModal = (props) => {
                 </div>
             </div>
         </div>
-        <BulkModal showAddBulkModal={showAddBulkModal} setShowBulkModal={setShowBulkModal} eventId={props.eventId}></BulkModal>
+        <BulkModal hiddemodal={props.setShowAddUsersModal} setRegisterUserModal={setShowAddUsersModal} showAddBulkModal={showAddBulkModal} setShowBulkModal={setShowBulkModal} eventId={props.eventId} setUpdateMemberList={props.setUpdateMemberList} updateMemberList={props.updateMemberList} ></BulkModal>
         {showAddUsersModal && (
         <RegisterUserInEvent setRegisterUserModal={setShowAddUsersModal} eventId={props.eventId} setUpdateMemberList={props.setUpdateMemberList} updateMemberList={props.updateMemberList}/>
       )}
